@@ -44,63 +44,13 @@ public class HolodexClient {
         });
     }
 
-    public List<Video> getLiveAndUpcomingVideos(String channelId,
-                                                String videoId,
-                                                ExtraInfo[] extraInfo,
-                                                Languages[] languages,
-                                                Integer limit,
-                                                Integer maxUpcomingHours,
-                                                String mentionedChannelId)
+    public List<Video> getLiveAndUpcomingVideos(QueryParameters queryParameters)
             throws UnirestException, JsonProcessingException {
         StringBuilder stringBuilder = new StringBuilder(URL + "live?");
 
-        if (channelId != null) {
-            stringBuilder
-                    .append("&channel_id=")
-                    .append(channelId);
-        }
+        buildRequest(queryParameters, stringBuilder);
 
-        if (videoId != null) {
-            stringBuilder
-                    .append("&id=")
-                    .append(videoId);
-        }
-
-        if (extraInfo != null) {
-            stringBuilder.append("&include=");
-
-            for (int i = 0; i < extraInfo.length; i++) {
-                stringBuilder.append(extraInfo[i].toString().toLowerCase());
-
-                if (i < extraInfo.length - 1) {
-                    stringBuilder.append(",");
-                }
-            }
-        }
-
-        if (languages != null) {
-            stringBuilder.append("&lang=");
-
-            for (int i = 0; i < languages.length; i++) {
-                stringBuilder.append(languages[i].toString().toLowerCase());
-
-                if (i < languages.length - 1) {
-                    stringBuilder.append(",");
-                }
-            }
-        }
-
-        if (limit != null) {
-            stringBuilder
-                    .append("&limit=")
-                    .append(limit);
-        }
-
-        if (maxUpcomingHours != null) {
-            stringBuilder
-                    .append("&max_upcoming_hours=")
-                    .append(maxUpcomingHours);
-        }
+        System.out.println(stringBuilder);
 
         HttpResponse<String> response = Unirest.get(stringBuilder.toString())
                 .header("Accept", "application/json")
@@ -142,14 +92,7 @@ public class HolodexClient {
 
         if (languages != null) {
             stringBuilder.append("&lang=");
-
-            for (int i = 0; i < languages.length; i++) {
-                stringBuilder.append(languages[i].toString().toLowerCase());
-
-                if (i < languages.length - 1) {
-                    stringBuilder.append(",");
-                }
-            }
+            buildLangParameter(languages, stringBuilder);
         }
 
         HttpResponse<String> response = Unirest.get(stringBuilder.toString())
@@ -174,8 +117,24 @@ public class HolodexClient {
             throws UnirestException, JsonProcessingException {
         StringBuilder stringBuilder = new StringBuilder(URL + "channels?");
 
-        if (queryParameters.getLanguages() != null)
-            buildLangParameter(queryParameters, stringBuilder);
+        buildRequest(queryParameters, stringBuilder);
+
+        System.out.println(stringBuilder);
+
+        HttpResponse<String> response = Unirest.get(stringBuilder.toString())
+                .header("Accept", "application/json")
+                .header("X-APIKEY", HOLODEX_API_KEY)
+                .asString();
+
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Channel>>() {
+        });
+    }
+
+    private void buildRequest(QueryParameters queryParameters, StringBuilder stringBuilder) {
+        if (queryParameters.getLanguages() != null) {
+            stringBuilder.append("&lang=");
+            buildLangParameter(queryParameters.getLanguages(), stringBuilder);
+        }
 
         if (queryParameters.getLimit() != null) {
             stringBuilder
@@ -191,7 +150,7 @@ public class HolodexClient {
 
         if (queryParameters.getSortOrder() != null) {
             stringBuilder
-                    .append("&sortOrder=")
+                    .append("&order=")
                     .append(queryParameters.getSortOrder().toString().toLowerCase());
         }
 
@@ -213,29 +172,67 @@ public class HolodexClient {
                     .append(queryParameters.getChannelType().toString().toLowerCase());
         }
 
-        System.out.println(stringBuilder);
-
-        HttpResponse<String> response = Unirest.get(stringBuilder.toString())
-                .header("Accept", "application/json")
-                .header("X-APIKEY", HOLODEX_API_KEY)
-                .asString();
-
-        return objectMapper.readValue(response.getBody(), new TypeReference<List<Channel>>() {
-        });
-    }
-
-    private void buildLangParameter(QueryParameters queryParameters, StringBuilder stringBuilder) {
-        stringBuilder.append("&lang=");
-
-        Languages[] languagesEnum = queryParameters.getLanguages();
-        String[] languages = new String[queryParameters.getLanguages().length];
-
-        for(int i = 0; i < languages.length; i++) {
-            languages[i] = languagesEnum[i].toString().toLowerCase();
+        if (queryParameters.getChannelId() != null) {
+            stringBuilder
+                    .append("&channel_id=")
+                    .append(queryParameters.getChannelId());
         }
 
+        if (queryParameters.getVideoId() != null) {
+            stringBuilder
+                    .append("&id=")
+                    .append(queryParameters.getVideoId());
+        }
+
+        if (queryParameters.getExtraInfo() != null) {
+            stringBuilder.append("&include=");
+            buildIncludeParameter(queryParameters.getExtraInfo(), stringBuilder);
+        }
+
+        if (queryParameters.getMaxUpcomingHours() != null) {
+            stringBuilder
+                    .append("&max_upcoming_hours=")
+                    .append(queryParameters.getMaxUpcomingHours());
+        }
+
+        if(queryParameters.getMentionedChannelId() != null) {
+            stringBuilder
+                    .append("&mentioned_channel_id=")
+                    .append(queryParameters.getMentionedChannelId());
+        }
+
+        if(queryParameters.getStatus() != null) {
+            stringBuilder
+                    .append("&status=")
+                    .append(queryParameters.getStatus().toString().toLowerCase());
+        }
+
+        if(queryParameters.getTopic() != null) {
+            stringBuilder
+                    .append("&topic=")
+                    .append(queryParameters.getTopic());
+        }
+
+        if(queryParameters.getVideoType() != null) {
+            stringBuilder
+                    .append("&type=")
+                    .append(queryParameters.getVideoType().toString().toLowerCase());
+        }
+    }
+
+    private void buildIncludeParameter(ExtraInfo[] extraInfo, StringBuilder stringBuilder) {
+        for (int i = 0; i < extraInfo.length; i++) {
+            stringBuilder.append(extraInfo[i].toString().toLowerCase());
+
+            if (i < extraInfo.length - 1) {
+                stringBuilder.append(",");
+            }
+        }
+    }
+
+    private void buildLangParameter(Languages[] languages, StringBuilder stringBuilder) {
         for (int i = 0; i < languages.length; i++) {
-            stringBuilder.append(languages[i].toLowerCase());
+            stringBuilder.append(languages[i].toString().toLowerCase());
 
             if (i < languages.length - 1) {
                 stringBuilder.append(",");

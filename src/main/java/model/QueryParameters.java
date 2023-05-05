@@ -1,9 +1,6 @@
 package model;
 
-import constants.ChannelType;
-import constants.Languages;
-import constants.Organizations;
-import constants.SortOrder;
+import constants.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,8 +11,8 @@ import lombok.NoArgsConstructor;
 public class QueryParameters {
 
     String channelId;
+    String videoId;
     String id;
-    String[] include;
     Languages[] languages;
     Integer limit;
     Integer maxUpcomingHours;
@@ -24,9 +21,11 @@ public class QueryParameters {
     SortOrder sortOrder;
     String organization;
     String sort;
-    String status;
     String topic;
     String type;
     ChannelType channelType;
+    ExtraInfo[] extraInfo;
+    Status status;
+    VideoType videoType;
 
 }
