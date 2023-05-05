@@ -1,6 +1,8 @@
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -17,10 +19,13 @@ public class HolodexClient {
     private final String URL = "https://holodex.net/api/v2/";
     private final String HOLODEX_API_KEY;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     public HolodexClient(String holodexApiKey) {
         this.HOLODEX_API_KEY = holodexApiKey;
+        objectMapper = JsonMapper.builder()
+                .addModule(new JavaTimeModule())
+                .build();
     }
 
     public List<Video> getLiveAndUpcomingVideos(String channelId)
@@ -59,6 +64,31 @@ public class HolodexClient {
 
         return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {
         });
+    }
+
+    public List<Video> getVideos() throws UnirestException, JsonProcessingException {
+        HttpResponse<String> response = Unirest.get(URL + "videos")
+                .header("Accept", "application/json")
+                .header("X-APIKEY", HOLODEX_API_KEY)
+                .asString();
+
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
+    }
+
+    public List<Video> getVideos(QueryParameters queryParameters)
+            throws UnirestException, JsonProcessingException {
+        StringBuilder stringBuilder = new StringBuilder(URL + "videos?");
+
+        buildRequest(queryParameters, stringBuilder);
+
+        System.out.println(stringBuilder);
+
+        HttpResponse<String> response = Unirest.get(stringBuilder.toString())
+                .header("Accept", "application/json")
+                .header("X-APIKEY", HOLODEX_API_KEY)
+                .asString();
+
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
     }
 
     public Channel getChannelInformation(String channelId) throws UnirestException, JsonProcessingException {
@@ -109,8 +139,7 @@ public class HolodexClient {
                 .header("X-APIKEY", HOLODEX_API_KEY)
                 .asString();
 
-        return objectMapper.readValue(response.getBody(), new TypeReference<List<Channel>>() {
-        });
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Channel>>() {});
     }
 
     public List<Channel> listChannels(QueryParameters queryParameters)
@@ -217,6 +246,12 @@ public class HolodexClient {
             stringBuilder
                     .append("&type=")
                     .append(queryParameters.getVideoType().toString().toLowerCase());
+        }
+
+        if(queryParameters.getFrom() != null) {
+            stringBuilder
+                    .append("&from=")
+                    .append(queryParameters.getFrom());
         }
     }
 

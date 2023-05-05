@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,5 +29,6 @@ public class QueryParameters {
     ExtraInfo[] extraInfo;
     Status status;
     VideoType videoType;
+    String from;
 
 }

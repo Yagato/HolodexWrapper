@@ -99,4 +99,21 @@ public class Video {
     @JsonProperty("comments")
     private List<Comment> comments;
 
+    @JsonProperty("jp_name")
+    private String jpName;
+
+    @JsonProperty("link")
+    private String link;
+
+    @JsonProperty("thumbnail")
+    private String thumbnail;
+
+    @JsonProperty("placeholderType")
+    private String placeholderType;
+
+    @JsonProperty("certainty")
+    private String certainty;
+
+    @JsonProperty("credits")
+    private Credits credits;
 }
