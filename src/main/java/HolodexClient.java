@@ -6,8 +6,10 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import constants.ChannelType;
 import constants.Languages;
-import constants.Order;
+import constants.SortOrder;
 import model.Channel;
+import model.Video;
+import org.apache.commons.codec.language.bm.Lang;
 
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class HolodexClient {
     public List<Channel> listChannels(Languages languages,
                                       Integer limit,
                                       Integer offset,
-                                      Order order,
+                                      SortOrder sortOrder,
                                       String org,
                                       String sort,
                                       ChannelType channelType)
@@ -59,10 +61,10 @@ public class HolodexClient {
                     .append(offset);
         }
 
-        if(order != null) {
+        if(sortOrder != null) {
             stringBuilder
-                    .append("&order=")
-                    .append(order.toString().toLowerCase());
+                    .append("&sortOrder=")
+                    .append(sortOrder.toString().toLowerCase());
         }
 
         if(org != null) {
@@ -89,5 +91,45 @@ public class HolodexClient {
                 .asString();
 
         return objectMapper.readValue(response.getBody(), new TypeReference<List<Channel>>() {});
+    }
+
+    public Video getVideoMetadata(String videoId,
+                                  Integer timestampComments,
+                                  Languages[] lang)
+            throws UnirestException, JsonProcessingException {
+        StringBuilder stringBuilder = new StringBuilder(URL + "videos/");
+
+        if(videoId == null) {
+            throw new RuntimeException("videoId can't be null");
+        }
+
+        stringBuilder
+                .append(videoId)
+                .append("?");
+
+        if(timestampComments != null && (timestampComments == 0 || timestampComments == 1)) {
+            stringBuilder
+                    .append("&c=")
+                    .append(timestampComments);
+        }
+
+        if(lang != null) {
+            stringBuilder.append("&lang=");
+
+            for(int i = 0; i < lang.length; i++) {
+                stringBuilder.append(lang[i].toString().toLowerCase());
+
+                if(i < lang.length - 1) {
+                    stringBuilder.append(",");
+                }
+            }
+        }
+        
+        HttpResponse<String> response = Unirest.get(stringBuilder.toString())
+                .header("Accept", "application/json")
+                .header("X-APIKEY", HOLODEX_API_KEY)
+                .asString();
+
+        return objectMapper.readValue(response.getBody(), Video.class);
     }
 }

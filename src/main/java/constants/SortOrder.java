@@ -1,6 +1,6 @@
 package constants;
 
-public enum Order {
+public enum SortOrder {
 
     ASC,
     DESC

@@ -1,6 +1,7 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +13,26 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Channel extends ChannelMin {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Channel {
+
+    @JsonProperty("id")
+    private String id;
+
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("english_name")
+    private String englishName;
+
+    @JsonProperty("type")
+    private String type;
+
+    @JsonProperty("photo")
+    private String photo;
+
+    @JsonProperty("org")
+    private String org;
 
     @JsonProperty("suborg")
     private String suborg;

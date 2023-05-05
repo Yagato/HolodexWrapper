@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChannelMin {
+public class Song {
 
     @JsonProperty("id")
     private String id;
@@ -16,16 +16,19 @@ public class ChannelMin {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("english_name")
-    private String englishName;
+    @JsonProperty("original_artist")
+    private String originalArtist;
 
-    @JsonProperty("type")
-    private String type;
+    @JsonProperty("art")
+    private String art;
 
-    @JsonProperty("photo")
-    private String photo;
+    @JsonProperty("start")
+    private int start;
 
-    @JsonProperty("org")
-    private String org;
+    @JsonProperty("end")
+    private int end;
+
+    @JsonProperty("itunesid")
+    private int iTunesId;
 
 }
