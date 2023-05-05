@@ -63,6 +63,9 @@ public class Video {
     @JsonProperty("live_tl_count")
     private LiveTranslator liveTlCount;
 
+    @JsonProperty("recent_live_tls")
+    private List<String> recentLiveTls;
+
     @JsonProperty("description")
     private String description;
 
