@@ -31,5 +31,6 @@ public class QueryParameters {
     VideoType videoType;
     OffsetDateTime from;
     OffsetDateTime to;
+    String[] channelIds;
 
 }

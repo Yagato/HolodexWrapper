@@ -959,4 +959,35 @@ public class HolodexClientTest {
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
     }
 
+    /*
+    *
+    * Tests for Quickly Access Live / Upcoming for a set of Channels (https://holodex.net/api/v2/users/live)
+    *
+    * */
+    @Test
+    @DisplayName("Get Live / Upcoming Videos for a set of Channels")
+    @Order(59)
+    public void getLiveOrUpcomingVideosForSetOfChannelsTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelIds(new String[]{
+                "UC5CwaMl1eIgY8h02uZw7u8A", // Suisei
+                "UC1DCedRgGHBdm81E1llLhOQ", // Pekora
+                "UCO_aKKYxn4tvrqPjcTzZ6EQ", // Fauna
+                "UCMwGHR0BTZuLsmjY_NT5Pwg" // Ina
+        });
+
+        List<Video> videos = holodexClient.getLiveOrUpcomingVideosForSetOfChannels(queryParameters);
+
+        assertNotNull(videos);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Get Live / Upcoming Videos for a set of Channels")
+    @Order(60)
+    public void getLiveOrUpcomingVideosForSetOfChannelsNullChannelsTest() {
+        assertThrows(RuntimeException.class, () -> {
+            holodexClient.getLiveOrUpcomingVideosForSetOfChannels(queryParameters);
+        });
+    }
+
 }

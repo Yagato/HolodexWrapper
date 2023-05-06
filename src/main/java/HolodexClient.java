@@ -138,6 +138,26 @@ public class HolodexClient {
         return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
     }
 
+    public List<Video> getLiveOrUpcomingVideosForSetOfChannels(QueryParameters queryParameters)
+            throws UnirestException, JsonProcessingException {
+        if(queryParameters.getChannelIds() == null) {
+            throw new RuntimeException("Channel IDs can't be null");
+        }
+
+        StringBuilder stringBuilder = new StringBuilder(URL + "users/live?channels=");
+
+        buildChannelsParameter(queryParameters.getChannelIds(), stringBuilder);
+
+        System.out.println(stringBuilder);
+
+        HttpResponse<String> response = Unirest.get(stringBuilder.toString())
+                .header("Accept", "application/json")
+                .header("X-APIKEY", HOLODEX_API_KEY)
+                .asString();
+
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
+    }
+
     public Video getVideoMetadata(String videoId,
                                   Integer timestampComments,
                                   Languages[] languages)
@@ -298,17 +318,13 @@ public class HolodexClient {
         }
     }
 
-    private void buildVideoTypeParameter(String videoType, StringBuilder stringBuilder) {
-        if(videoType.equals("CLIPS") || videoType.equals("VIDEOS") || videoType.equals("COLLABS")) {
-            stringBuilder
-                    .append("/")
-                    .append(videoType.toLowerCase())
-                    .append("?");
-        }
-        else {
-            stringBuilder
-                    .append("&type=")
-                    .append(videoType.toString().toLowerCase());
+    private void buildChannelsParameter(String[] channelIds, StringBuilder stringBuilder) {
+        for (int i = 0; i < channelIds.length; i++) {
+            stringBuilder.append(channelIds[i]);
+
+            if (i < channelIds.length - 1) {
+                stringBuilder.append(",");
+            }
         }
     }
 
