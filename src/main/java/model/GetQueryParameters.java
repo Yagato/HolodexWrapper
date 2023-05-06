@@ -25,7 +25,7 @@ public class GetQueryParameters {
     String sort;
     String topic;
     String type;
-    ChannelType channelType;
+    String channelType;
     ExtraInfo[] extraInfo;
     Status status;
     VideoType videoType;

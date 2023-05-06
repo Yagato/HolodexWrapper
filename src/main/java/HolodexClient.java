@@ -276,7 +276,7 @@ public class HolodexClient {
         if (getQueryParameters.getChannelType() != null) {
             stringBuilder
                     .append("&type=")
-                    .append(getQueryParameters.getChannelType().toString().toLowerCase());
+                    .append(getQueryParameters.getChannelType());
         }
 
         if (getQueryParameters.getChannelId() != null) {
