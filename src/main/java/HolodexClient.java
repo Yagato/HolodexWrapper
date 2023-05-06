@@ -111,7 +111,7 @@ public class HolodexClient {
             throw new RuntimeException("Video Type can't be null");
         }
 
-        if(getQueryParameters.getLanguages() != null && getQueryParameters.getVideoType().toString().equals("videos")) {
+        if(getQueryParameters.getLanguages() != null && getQueryParameters.getVideoType().equals("videos")) {
             throw new RuntimeException("Can't filter VIDEOS by language");
         }
 
@@ -120,7 +120,7 @@ public class HolodexClient {
         stringBuilder
                 .append(getQueryParameters.getChannelId())
                 .append("/")
-                .append(getQueryParameters.getVideoType().toString().toLowerCase())
+                .append(getQueryParameters.getVideoType())
                 .append("?");
 
         getQueryParameters.setChannelId(null);
@@ -323,7 +323,7 @@ public class HolodexClient {
         if(getQueryParameters.getVideoType() != null) {
             stringBuilder
                     .append("&type=")
-                    .append(getQueryParameters.getVideoType().toString().toLowerCase());
+                    .append(getQueryParameters.getVideoType());
         }
 
         if(getQueryParameters.getFrom() != null) {
