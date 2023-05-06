@@ -7,7 +7,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import constants.ExtraInfo;
-import constants.Languages;
+import constants.Language;
 import model.Channel;
 import model.GetQueryParameters;
 import model.PostQueryParameters;
@@ -111,7 +111,7 @@ public class HolodexClient {
             throw new RuntimeException("Video Type can't be null");
         }
 
-        if(getQueryParameters.getLanguages() != null && getQueryParameters.getVideoType().toString().equals("VIDEOS")) {
+        if(getQueryParameters.getLanguages() != null && getQueryParameters.getVideoType().toString().equals("videos")) {
             throw new RuntimeException("Can't filter VIDEOS by language");
         }
 
@@ -160,7 +160,7 @@ public class HolodexClient {
 
     public Video getVideoMetadata(String videoId,
                                   Integer timestampComments,
-                                  Languages[] languages)
+                                  String[] languages)
             throws UnirestException, JsonProcessingException {
         if (videoId == null) {
             throw new RuntimeException("videoId can't be null");
@@ -358,9 +358,9 @@ public class HolodexClient {
         }
     }
 
-    private void buildLangParameter(Languages[] languages, StringBuilder stringBuilder) {
+    private void buildLangParameter(String[] languages, StringBuilder stringBuilder) {
         for (int i = 0; i < languages.length; i++) {
-            stringBuilder.append(languages[i].toString().toLowerCase());
+            stringBuilder.append(languages[i]);
 
             if (i < languages.length - 1) {
                 stringBuilder.append(",");

@@ -15,7 +15,7 @@ public class GetQueryParameters {
     String channelId;
     String videoId;
     String id;
-    Languages[] languages;
+    String[] languages;
     Integer limit;
     Integer maxUpcomingHours;
     String mentionedChannelId;
