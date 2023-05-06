@@ -6,8 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import constants.ExtraInfo;
-import constants.Language;
 import constants.SortOrder;
 import model.Channel;
 import model.GetQueryParameters;
@@ -55,7 +53,7 @@ public class HolodexClient {
             throws UnirestException, JsonProcessingException {
         StringBuilder stringBuilder = new StringBuilder(URL + "live?");
 
-        buildRequest(getQueryParameters, stringBuilder);
+        buildGetRequest(getQueryParameters, stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -81,7 +79,7 @@ public class HolodexClient {
             throws UnirestException, JsonProcessingException {
         StringBuilder stringBuilder = new StringBuilder(URL + "videos?");
 
-        buildRequest(getQueryParameters, stringBuilder);
+        buildGetRequest(getQueryParameters, stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -127,7 +125,7 @@ public class HolodexClient {
         getQueryParameters.setChannelId(null);
         getQueryParameters.setVideoType(null);
 
-        buildRequest(getQueryParameters, stringBuilder);
+        buildGetRequest(getQueryParameters, stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -147,7 +145,7 @@ public class HolodexClient {
 
         StringBuilder stringBuilder = new StringBuilder(URL + "users/live?channels=");
 
-        buildChannelsParameter(getQueryParameters.getChannelIds(), stringBuilder);
+        buildArrayParameter(getQueryParameters.getChannelIds(), stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -181,7 +179,7 @@ public class HolodexClient {
 
         if (languages != null) {
             stringBuilder.append("&lang=");
-            buildLangParameter(languages, stringBuilder);
+            buildArrayParameter(languages, stringBuilder);
         }
 
         HttpResponse<String> response = Unirest.get(stringBuilder.toString())
@@ -205,7 +203,7 @@ public class HolodexClient {
             throws UnirestException, JsonProcessingException {
         StringBuilder stringBuilder = new StringBuilder(URL + "channels?");
 
-        buildRequest(getQueryParameters, stringBuilder);
+        buildGetRequest(getQueryParameters, stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -221,17 +219,7 @@ public class HolodexClient {
     public List<Video> searchVideos(PostQueryParameters postQueryParameters)
             throws UnirestException, JsonProcessingException {
 
-        if(postQueryParameters.getSort() == null) {
-            postQueryParameters.setSort(SortOrder.NEWEST);
-        }
-
-        if(postQueryParameters.getOffset() == null) {
-            postQueryParameters.setOffset(0);
-        }
-
-        if(postQueryParameters.getLimit() == null) {
-            postQueryParameters.setLimit(30);
-        }
+        buildSearchRequest(postQueryParameters);
 
         HttpResponse<String> response = Unirest.post(URL + "search/videoSearch")
                 .header("Content-Type", "application/json")
@@ -246,10 +234,32 @@ public class HolodexClient {
         });
     }
 
-    private void buildRequest(GetQueryParameters getQueryParameters, StringBuilder stringBuilder) {
+    public List<Video> searchCommentsVideos(PostQueryParameters postQueryParameters)
+            throws UnirestException, JsonProcessingException {
+
+        if(postQueryParameters.getComment() == null) {
+            throw new RuntimeException("Comment can't be null");
+        }
+
+        buildSearchRequest(postQueryParameters);
+
+        HttpResponse<String> response = Unirest.post(URL + "search/commentSearch")
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .header("X-APIKEY", HOLODEX_API_KEY)
+                .body(objectMapper.writeValueAsString(postQueryParameters))
+                .asString();
+
+        System.out.println(objectMapper.writeValueAsString(postQueryParameters));
+
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {
+        });
+    }
+
+    private void buildGetRequest(GetQueryParameters getQueryParameters, StringBuilder stringBuilder) {
         if (getQueryParameters.getLanguages() != null) {
             stringBuilder.append("&lang=");
-            buildLangParameter(getQueryParameters.getLanguages(), stringBuilder);
+            buildArrayParameter(getQueryParameters.getLanguages(), stringBuilder);
         }
 
         if (getQueryParameters.getLimit() != null) {
@@ -302,7 +312,7 @@ public class HolodexClient {
 
         if (getQueryParameters.getExtraInfo() != null) {
             stringBuilder.append("&include=");
-            buildIncludeParameter(getQueryParameters.getExtraInfo(), stringBuilder);
+            buildArrayParameter(getQueryParameters.getExtraInfo(), stringBuilder);
         }
 
         if (getQueryParameters.getMaxUpcomingHours() != null) {
@@ -342,38 +352,33 @@ public class HolodexClient {
         }
 
         if(getQueryParameters.getTo() != null) {
-            stringBuilder.append("&to")
+            stringBuilder
+                    .append("&to")
                     .append(getQueryParameters.getTo());
         }
     }
 
-    private void buildChannelsParameter(String[] channelIds, StringBuilder stringBuilder) {
-        for (int i = 0; i < channelIds.length; i++) {
-            stringBuilder.append(channelIds[i]);
+    private void buildArrayParameter(String[] array, StringBuilder stringBuilder) {
+        for (int i = 0; i < array.length; i++) {
+            stringBuilder.append(array[i]);
 
-            if (i < channelIds.length - 1) {
+            if (i < array.length - 1) {
                 stringBuilder.append(",");
             }
         }
     }
 
-    private void buildIncludeParameter(String[] extraInfo, StringBuilder stringBuilder) {
-        for (int i = 0; i < extraInfo.length; i++) {
-            stringBuilder.append(extraInfo[i]);
-
-            if (i < extraInfo.length - 1) {
-                stringBuilder.append(",");
-            }
+    private void buildSearchRequest(PostQueryParameters postQueryParameters) {
+        if(postQueryParameters.getSort() == null) {
+            postQueryParameters.setSort(SortOrder.NEWEST);
         }
-    }
 
-    private void buildLangParameter(String[] languages, StringBuilder stringBuilder) {
-        for (int i = 0; i < languages.length; i++) {
-            stringBuilder.append(languages[i]);
+        if(postQueryParameters.getOffset() == null) {
+            postQueryParameters.setOffset(0);
+        }
 
-            if (i < languages.length - 1) {
-                stringBuilder.append(",");
-            }
+        if(postQueryParameters.getLimit() == null) {
+            postQueryParameters.setLimit(30);
         }
     }
 

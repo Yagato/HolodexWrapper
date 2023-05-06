@@ -5,10 +5,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import constants.*;
 import io.github.cdimascio.dotenv.Dotenv;
-import model.Channel;
-import model.GetQueryParameters;
-import model.PostQueryParameters;
-import model.Video;
+import model.*;
+import org.apache.commons.codec.binary.StringUtils;
 import org.junit.jupiter.api.*;
 
 import java.text.ParseException;
@@ -1188,6 +1186,56 @@ public class HolodexClientTest {
 
         assertNotNull(videos);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    /*
+    *
+    * Tests for post-search-commentSearch (https://holodex.net/api/v2/search/commentSearch)
+    * This endpoint doesn't seem to be working correctly
+    *
+    * */
+    @Test
+    @DisplayName("Search Comments in Videos")
+    @Order(73)
+    public void searchCommentsVideosTest() throws UnirestException, JsonProcessingException {
+        String word = "lemon";
+        postQueryParameters.setComment(word);
+
+        List<Video> videos = holodexClient.searchCommentsVideos(postQueryParameters);
+
+        List<List<Comment>> comments = new ArrayList<>();
+
+        for(Video video : videos) {
+            comments.add(video.getComments());
+        }
+
+        int counter = 0;
+        int totalComments = 0;
+
+        for (List<Comment> commentList : comments) {
+
+            totalComments += commentList.size();
+
+            for (Comment comment : commentList) {
+                String lowerCaseMessage = comment.getMessage().toLowerCase();
+                comment.setMessage(lowerCaseMessage);
+
+                if(lowerCaseMessage.contains(word))
+                    counter++;
+            }
+        }
+
+        assertEquals(totalComments, counter);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(comments));
+    }
+
+    @Test
+    @DisplayName("Search Comments in Videos Null Comment")
+    @Order(74)
+    public void searchCommentsVideosNullCommentTest() {
+        assertThrows(RuntimeException.class, () -> {
+            holodexClient.searchCommentsVideos(postQueryParameters);
+        });
     }
 
 }
