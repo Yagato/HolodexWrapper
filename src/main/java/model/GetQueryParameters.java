@@ -27,7 +27,7 @@ public class GetQueryParameters {
     String type;
     String channelType;
     String[] extraInfo;
-    Status status;
+    String status;
     String videoType;
     OffsetDateTime from;
     OffsetDateTime to;

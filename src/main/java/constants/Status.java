@@ -1,11 +1,11 @@
 package constants;
 
-public enum Status {
+public class Status {
 
-    NEW,
-    UPCOMING,
-    LIVE,
-    PAST,
-    MISSING
+    public final static String NEW = "new";
+    public final static String UPCOMING = "upcoming";
+    public final static String LIVE = "live";
+    public final static String PAST = "past";
+    public final static String MISSING = "missing";
 
 }

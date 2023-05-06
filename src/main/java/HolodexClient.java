@@ -8,6 +8,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import constants.ExtraInfo;
 import constants.Language;
+import constants.SortOrder;
 import model.Channel;
 import model.GetQueryParameters;
 import model.PostQueryParameters;
@@ -220,6 +221,14 @@ public class HolodexClient {
     public List<Video> searchVideos(PostQueryParameters postQueryParameters)
             throws UnirestException, JsonProcessingException {
 
+        if(postQueryParameters.getSort() == null) {
+            postQueryParameters.setSort(SortOrder.NEWEST);
+        }
+
+        if(postQueryParameters.getOffset() == null) {
+            postQueryParameters.setOffset(0);
+        }
+
         if(postQueryParameters.getLimit() == null) {
             postQueryParameters.setLimit(30);
         }
@@ -311,7 +320,7 @@ public class HolodexClient {
         if(getQueryParameters.getStatus() != null) {
             stringBuilder
                     .append("&status=")
-                    .append(getQueryParameters.getStatus().toString().toLowerCase());
+                    .append(getQueryParameters.getStatus());
         }
 
         if(getQueryParameters.getTopic() != null) {

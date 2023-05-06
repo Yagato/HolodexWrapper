@@ -19,7 +19,7 @@ public class PostQueryParameters {
     private String language;
 
     @JsonProperty("target")
-    private VideoType[] videoTypes;
+    private String[] videoTypes;
 
     @JsonProperty("conditions")
     private String[] conditions;
