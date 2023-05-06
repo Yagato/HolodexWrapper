@@ -8,6 +8,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import constants.ExtraInfo;
 import constants.Languages;
+import constants.VideoType;
 import model.Channel;
 import model.QueryParameters;
 import model.Video;
@@ -100,15 +101,52 @@ public class HolodexClient {
         return objectMapper.readValue(response.getBody(), Channel.class);
     }
 
+    public List<Video> getVideosRelatedToChannel(QueryParameters queryParameters)
+            throws UnirestException, JsonProcessingException {
+        if(queryParameters.getChannelId() == null) {
+            throw new RuntimeException("Channel ID can't be null");
+        }
+
+        if(queryParameters.getVideoType() == null) {
+            throw new RuntimeException("Video Type can't be null");
+        }
+
+        if(queryParameters.getLanguages() != null && queryParameters.getVideoType().toString().equals("VIDEOS")) {
+            throw new RuntimeException("Can't filter VIDEOS by language");
+        }
+
+        StringBuilder stringBuilder = new StringBuilder(URL + "channels/");
+
+        stringBuilder
+                .append(queryParameters.getChannelId())
+                .append("/")
+                .append(queryParameters.getVideoType().toString().toLowerCase())
+                .append("?");
+
+        queryParameters.setChannelId(null);
+        queryParameters.setVideoType(null);
+
+        buildRequest(queryParameters, stringBuilder);
+
+        System.out.println(stringBuilder);
+
+        HttpResponse<String> response = Unirest.get(stringBuilder.toString())
+                .header("Accept", "application/json")
+                .header("X-APIKEY", HOLODEX_API_KEY)
+                .asString();
+
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
+    }
+
     public Video getVideoMetadata(String videoId,
                                   Integer timestampComments,
                                   Languages[] languages)
             throws UnirestException, JsonProcessingException {
-        StringBuilder stringBuilder = new StringBuilder(URL + "videos/");
-
         if (videoId == null) {
             throw new RuntimeException("videoId can't be null");
         }
+
+        StringBuilder stringBuilder = new StringBuilder(URL + "videos/");
 
         stringBuilder
                 .append(videoId)
@@ -255,9 +293,22 @@ public class HolodexClient {
         }
 
         if(queryParameters.getTo() != null) {
-            stringBuilder
-                    .append("&to=")
+            stringBuilder.append("&to")
                     .append(queryParameters.getTo());
+        }
+    }
+
+    private void buildVideoTypeParameter(String videoType, StringBuilder stringBuilder) {
+        if(videoType.equals("CLIPS") || videoType.equals("VIDEOS") || videoType.equals("COLLABS")) {
+            stringBuilder
+                    .append("/")
+                    .append(videoType.toLowerCase())
+                    .append("?");
+        }
+        else {
+            stringBuilder
+                    .append("&type=")
+                    .append(videoType.toString().toLowerCase());
         }
     }
 

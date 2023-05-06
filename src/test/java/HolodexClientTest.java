@@ -205,6 +205,24 @@ public class HolodexClientTest {
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(channels));
     }
 
+    @Test
+    @DisplayName("List Channels All Parameters")
+    @Order(12)
+    public void listChannelsAllParametersTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setLanguages(new Languages[]{Languages.JA});
+        queryParameters.setLimit(5);
+        queryParameters.setOffset(5);
+        queryParameters.setSortOrder(SortOrder.ASC);
+        queryParameters.setOrganization(Organizations.HOLOLIVE);
+        queryParameters.setSort("clip_count");
+        queryParameters.setChannelType(ChannelType.VTUBER);
+
+        List<Channel> channels = holodexClient.listChannels(queryParameters);
+
+        assertNotNull(channels);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(channels));
+    }
+
     /*
      *
      * Tests for Get a single Video's metadata (https://holodex.net/api/v2/videos/{videoId})
@@ -772,10 +790,173 @@ public class HolodexClientTest {
     *
     * */
     @Test
-    @DisplayName("Get Videos by Video Type (Clip)")
-    @Order(48)
-    public void getVideosRelatedToChannel() throws UnirestException, JsonProcessingException {
+    @DisplayName("Get Videos Related to Channel (Clips)")
+    @Order(49)
+    public void getVideosRelatedToChannelVideoTypeClipsTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        queryParameters.setVideoType(VideoType.CLIPS);
 
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+
+        List<String> videoTypes = new ArrayList<>();
+
+        for(Video video : videos) {
+            videoTypes.add(video.getType());
+        }
+
+        assertTrue(videoTypes.stream().allMatch("clip"::equals));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel (Videos)")
+    @Order(50)
+    public void getVideosRelatedToChannelVideoTypeVideosTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        queryParameters.setVideoType(VideoType.VIDEOS);
+
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+
+        List<String> channelNames = new ArrayList<>();
+
+        for(Video video : videos) {
+            channelNames.add(video.getChannel().getName());
+        }
+
+        assertTrue(channelNames.stream().allMatch("Suisei Channel"::equals));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel (Collabs)")
+    @Order(51)
+    public void getVideosRelatedToChannelVideoTypeCollabsTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        queryParameters.setVideoType(VideoType.COLLABS);
+
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+
+        List<String> channelNames = new ArrayList<>();
+
+        for(Video video : videos) {
+            channelNames.add(video.getChannel().getName());
+        }
+
+        assertFalse(channelNames.stream().allMatch("Suisei Channel"::equals));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel Null Channel ID")
+    @Order(52)
+    public void getVideosRelatedToChannelNullChannelIdTest() {
+        queryParameters.setVideoType(VideoType.COLLABS);
+
+        assertThrows(RuntimeException.class, () -> {
+            holodexClient.getVideosRelatedToChannel(queryParameters);
+        });
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel Null Video Type")
+    @Order(53)
+    public void getVideosRelatedToChannelNullVideoTypeTest() {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+
+        assertThrows(RuntimeException.class, () -> {
+            holodexClient.getVideosRelatedToChannel(queryParameters);
+        });
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel with Include parameter")
+    @Order(54)
+    public void getVideosRelatedToChannelInludeParameterTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        queryParameters.setVideoType(VideoType.CLIPS);
+        queryParameters.setExtraInfo(new ExtraInfo[]{ExtraInfo.DESCRIPTION});
+
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+
+        assertNotNull(videos.get(0).getDescription());
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel Filter Clips by Language")
+    @Order(55)
+    public void getVideosRelatedToChannelFilterClipsByLanguageTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        queryParameters.setVideoType(VideoType.CLIPS);
+        queryParameters.setLanguages(new Languages[]{Languages.JA, Languages.ES});
+
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+
+        int total = 0;
+
+        for (Video video : videos) {
+            if (video.getLang().equals("es") || video.getLang().equals("ja")) {
+                total++;
+            }
+        }
+
+        assertEquals(videos.size(), total);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel Filter Collabs by Language")
+    @Order(56)
+    public void getVideosRelatedToChannelFilterCollabsByLanguageTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        queryParameters.setVideoType(VideoType.COLLABS);
+        queryParameters.setLanguages(new Languages[]{Languages.JA, Languages.ES});
+
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+
+        assertTrue(videos.size() > 0);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel Filter Collabs by Language")
+    @Order(57)
+    public void getVideosRelatedToChannelFilterVideosByLanguageTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        queryParameters.setVideoType(VideoType.VIDEOS);
+        queryParameters.setLanguages(new Languages[]{Languages.JA, Languages.ES});
+
+        assertThrows(RuntimeException.class, () -> {
+            holodexClient.getVideosRelatedToChannel(queryParameters);
+        });
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel with Limit")
+    @Order(57)
+    public void getVideosRelatedToChannelLimitTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        queryParameters.setVideoType(VideoType.VIDEOS);
+        queryParameters.setLimit(5);
+
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+
+        assertEquals(videos.size(), 5);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Get Videos Related to Channel with Offset")
+    @Order(58)
+    public void getVideosRelatedToChannelOffsetTest() throws UnirestException, JsonProcessingException {
+        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        queryParameters.setVideoType(VideoType.VIDEOS);
+        queryParameters.setOffset(5);
+
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+
+        assertTrue(videos.size() > 0);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
     }
 
 }
