@@ -29,6 +29,7 @@ public class QueryParameters {
     ExtraInfo[] extraInfo;
     Status status;
     VideoType videoType;
-    String from;
+    OffsetDateTime from;
+    OffsetDateTime to;
 
 }

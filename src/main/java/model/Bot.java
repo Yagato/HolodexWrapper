@@ -10,12 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Credits {
+public class Bot {
 
-    @JsonProperty("editor")
-    private Editor editor;
+    @JsonProperty("link")
+    private String link;
 
-    @JsonProperty("bot")
-    private Bot bot;
+    @JsonProperty("name")
+    private String name;
+
+    @JsonProperty("user")
+    private String user;
 
 }

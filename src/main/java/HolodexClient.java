@@ -253,6 +253,12 @@ public class HolodexClient {
                     .append("&from=")
                     .append(queryParameters.getFrom());
         }
+
+        if(queryParameters.getTo() != null) {
+            stringBuilder
+                    .append("&to=")
+                    .append(queryParameters.getTo());
+        }
     }
 
     private void buildIncludeParameter(ExtraInfo[] extraInfo, StringBuilder stringBuilder) {
