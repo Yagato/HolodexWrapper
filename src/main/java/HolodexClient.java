@@ -348,9 +348,9 @@ public class HolodexClient {
         }
     }
 
-    private void buildIncludeParameter(ExtraInfo[] extraInfo, StringBuilder stringBuilder) {
+    private void buildIncludeParameter(String[] extraInfo, StringBuilder stringBuilder) {
         for (int i = 0; i < extraInfo.length; i++) {
-            stringBuilder.append(extraInfo[i].toString().toLowerCase());
+            stringBuilder.append(extraInfo[i]);
 
             if (i < extraInfo.length - 1) {
                 stringBuilder.append(",");
