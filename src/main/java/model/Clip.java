@@ -16,6 +16,6 @@ public class Clip extends Video {
 
     @JsonProperty("available_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
-    private Date availableAt;
+    private OffsetDateTime availableAt;
 
 }
