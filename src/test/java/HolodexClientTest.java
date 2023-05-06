@@ -1018,7 +1018,7 @@ public class HolodexClientTest {
 
     @Test
     @DisplayName("Search a List of Videos Sort by Newest")
-    @Order(61)
+    @Order(62)
     public void searchVideosSortByNewestTest() throws UnirestException, JsonProcessingException {
         postQueryParameters.setSort(SortOrder.NEWEST);
 
@@ -1035,7 +1035,7 @@ public class HolodexClientTest {
 
     @Test
     @DisplayName("Search a List of Videos Sort by Oldest")
-    @Order(62)
+    @Order(63)
     public void searchVideosSortByOldestTest() throws UnirestException, JsonProcessingException {
         postQueryParameters.setSort(SortOrder.OLDEST);
 
@@ -1047,6 +1047,146 @@ public class HolodexClientTest {
         OffsetDateTime lastIndexAvailableAtDate = videos.get(lastIndex).getAvailableAt();
 
         assertTrue(indexZeroAvailableAtDate.isBefore(lastIndexAvailableAtDate));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos Filter by Video Type (Clip)")
+    @Order(64)
+    public void searchVideosFilterByVideoTypeClipTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setVideoTypes(new String[]{VideoType.CLIP});
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        List<String> videoTypes = new ArrayList<>();
+
+        for(Video video : videos) {
+            videoTypes.add(video.getType());
+        }
+
+        assertTrue(videoTypes.stream().allMatch("clip"::equals));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos Filter by Video Type (Stream)")
+    @Order(65)
+    public void searchVideosFilterByVideoTypeStreamTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setVideoTypes(new String[]{VideoType.STREAM});
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        List<String> videoTypes = new ArrayList<>();
+
+        for(Video video : videos) {
+            videoTypes.add(video.getType());
+        }
+
+        assertTrue(videoTypes.stream().allMatch("stream"::equals));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos Filter by Languages")
+    @Order(66)
+    public void searchVideosFilterByLanguagesTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setVideoTypes(new String[]{VideoType.CLIP});
+        postQueryParameters.setLanguage(new String[]{Language.ES, Language.ID});
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        assertTrue(videos.size() > 0);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos Filter by Topic")
+    @Order(67)
+    public void searchVideosFilterByTopicTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setTopics(new String[]{"singing"});
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        List<String> topics = new ArrayList<>();
+
+        for(Video video : videos) {
+            topics.add(video.getTopicId());
+        }
+
+        assertTrue(topics.stream().allMatch("singing"::equals));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos Filter by Topic")
+    @Order(68)
+    public void searchVideosFilterByChannelIdsTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setChannelIds(new String[]{
+                "UC5CwaMl1eIgY8h02uZw7u8A", // Suisei
+                "UCMwGHR0BTZuLsmjY_NT5Pwg" // Ina
+        });
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        assertNotNull(videos);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos Filter by Organizations")
+    @Order(69)
+    public void searchVideosFilterByOrganizationsTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setOrganizations(new String[]{
+                "Hololive",
+                "Nijisanji"
+        });
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        assertNotNull(videos);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos with Offset")
+    @Order(70)
+    public void searchVideosOffsetTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setOffset(10);
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        assertNotNull(videos);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos with Limit")
+    @Order(71)
+    public void searchVideosLimitTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setLimit(10);
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        assertEquals(videos.size(), 10);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos All Parameters")
+    @Order(72)
+    public void searchVideosAllParametersTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setSort(SortOrder.OLDEST);
+        postQueryParameters.setVideoTypes(new String[]{VideoType.STREAM, VideoType.CLIP});
+        postQueryParameters.setLanguage(new String[]{Language.EN, Language.JA});
+        postQueryParameters.setTopics(new String[]{"singing"});
+        postQueryParameters.setChannelIds(new String[]{"UC5CwaMl1eIgY8h02uZw7u8A"});
+        postQueryParameters.setOrganizations(new String[]{Organizations.HOLOLIVE});
+        postQueryParameters.setOffset(5);
+        postQueryParameters.setLimit(10);
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        assertNotNull(videos);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
     }
 

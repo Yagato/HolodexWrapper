@@ -16,7 +16,7 @@ public class PostQueryParameters {
     private String sort;
 
     @JsonProperty("lang")
-    private String language;
+    private String[] language;
 
     @JsonProperty("target")
     private String[] videoTypes;
