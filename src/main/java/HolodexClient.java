@@ -8,9 +8,9 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import constants.ExtraInfo;
 import constants.Languages;
-import constants.VideoType;
 import model.Channel;
-import model.QueryParameters;
+import model.GetQueryParameters;
+import model.PostQueryParameters;
 import model.Video;
 
 import java.util.List;
@@ -50,11 +50,11 @@ public class HolodexClient {
         });
     }
 
-    public List<Video> getLiveAndUpcomingVideos(QueryParameters queryParameters)
+    public List<Video> getLiveAndUpcomingVideos(GetQueryParameters getQueryParameters)
             throws UnirestException, JsonProcessingException {
         StringBuilder stringBuilder = new StringBuilder(URL + "live?");
 
-        buildRequest(queryParameters, stringBuilder);
+        buildRequest(getQueryParameters, stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -76,11 +76,11 @@ public class HolodexClient {
         return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
     }
 
-    public List<Video> getVideos(QueryParameters queryParameters)
+    public List<Video> getVideos(GetQueryParameters getQueryParameters)
             throws UnirestException, JsonProcessingException {
         StringBuilder stringBuilder = new StringBuilder(URL + "videos?");
 
-        buildRequest(queryParameters, stringBuilder);
+        buildRequest(getQueryParameters, stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -101,32 +101,32 @@ public class HolodexClient {
         return objectMapper.readValue(response.getBody(), Channel.class);
     }
 
-    public List<Video> getVideosRelatedToChannel(QueryParameters queryParameters)
+    public List<Video> getVideosRelatedToChannel(GetQueryParameters getQueryParameters)
             throws UnirestException, JsonProcessingException {
-        if(queryParameters.getChannelId() == null) {
+        if(getQueryParameters.getChannelId() == null) {
             throw new RuntimeException("Channel ID can't be null");
         }
 
-        if(queryParameters.getVideoType() == null) {
+        if(getQueryParameters.getVideoType() == null) {
             throw new RuntimeException("Video Type can't be null");
         }
 
-        if(queryParameters.getLanguages() != null && queryParameters.getVideoType().toString().equals("VIDEOS")) {
+        if(getQueryParameters.getLanguages() != null && getQueryParameters.getVideoType().toString().equals("VIDEOS")) {
             throw new RuntimeException("Can't filter VIDEOS by language");
         }
 
         StringBuilder stringBuilder = new StringBuilder(URL + "channels/");
 
         stringBuilder
-                .append(queryParameters.getChannelId())
+                .append(getQueryParameters.getChannelId())
                 .append("/")
-                .append(queryParameters.getVideoType().toString().toLowerCase())
+                .append(getQueryParameters.getVideoType().toString().toLowerCase())
                 .append("?");
 
-        queryParameters.setChannelId(null);
-        queryParameters.setVideoType(null);
+        getQueryParameters.setChannelId(null);
+        getQueryParameters.setVideoType(null);
 
-        buildRequest(queryParameters, stringBuilder);
+        buildRequest(getQueryParameters, stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -138,15 +138,15 @@ public class HolodexClient {
         return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
     }
 
-    public List<Video> getLiveOrUpcomingVideosForSetOfChannels(QueryParameters queryParameters)
+    public List<Video> getLiveOrUpcomingVideosForSetOfChannels(GetQueryParameters getQueryParameters)
             throws UnirestException, JsonProcessingException {
-        if(queryParameters.getChannelIds() == null) {
+        if(getQueryParameters.getChannelIds() == null) {
             throw new RuntimeException("Channel IDs can't be null");
         }
 
         StringBuilder stringBuilder = new StringBuilder(URL + "users/live?channels=");
 
-        buildChannelsParameter(queryParameters.getChannelIds(), stringBuilder);
+        buildChannelsParameter(getQueryParameters.getChannelIds(), stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -200,11 +200,11 @@ public class HolodexClient {
         return objectMapper.readValue(response.getBody(), new TypeReference<List<Channel>>() {});
     }
 
-    public List<Channel> listChannels(QueryParameters queryParameters)
+    public List<Channel> listChannels(GetQueryParameters getQueryParameters)
             throws UnirestException, JsonProcessingException {
         StringBuilder stringBuilder = new StringBuilder(URL + "channels?");
 
-        buildRequest(queryParameters, stringBuilder);
+        buildRequest(getQueryParameters, stringBuilder);
 
         System.out.println(stringBuilder);
 
@@ -217,104 +217,124 @@ public class HolodexClient {
         });
     }
 
-    private void buildRequest(QueryParameters queryParameters, StringBuilder stringBuilder) {
-        if (queryParameters.getLanguages() != null) {
-            stringBuilder.append("&lang=");
-            buildLangParameter(queryParameters.getLanguages(), stringBuilder);
+    public List<Video> searchVideos(PostQueryParameters postQueryParameters)
+            throws UnirestException, JsonProcessingException {
+
+        if(postQueryParameters.getLimit() == null) {
+            postQueryParameters.setLimit(30);
         }
 
-        if (queryParameters.getLimit() != null) {
+        HttpResponse<String> response = Unirest.post(URL + "search/videoSearch")
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .header("X-APIKEY", HOLODEX_API_KEY)
+                .body(objectMapper.writeValueAsString(postQueryParameters))
+                .asString();
+
+        System.out.println(objectMapper.writeValueAsString(postQueryParameters));
+
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {
+        });
+    }
+
+    private void buildRequest(GetQueryParameters getQueryParameters, StringBuilder stringBuilder) {
+        if (getQueryParameters.getLanguages() != null) {
+            stringBuilder.append("&lang=");
+            buildLangParameter(getQueryParameters.getLanguages(), stringBuilder);
+        }
+
+        if (getQueryParameters.getLimit() != null) {
             stringBuilder
                     .append("&limit=")
-                    .append(queryParameters.getLimit());
+                    .append(getQueryParameters.getLimit());
         }
 
-        if (queryParameters.getOffset() != null) {
+        if (getQueryParameters.getOffset() != null) {
             stringBuilder
                     .append("&offset=")
-                    .append(queryParameters.getOffset());
+                    .append(getQueryParameters.getOffset());
         }
 
-        if (queryParameters.getSortOrder() != null) {
+        if (getQueryParameters.getSortOrder() != null) {
             stringBuilder
                     .append("&order=")
-                    .append(queryParameters.getSortOrder().toString().toLowerCase());
+                    .append(getQueryParameters.getSortOrder());
         }
 
-        if (queryParameters.getOrganization() != null) {
+        if (getQueryParameters.getOrganization() != null) {
             stringBuilder
                     .append("&org=")
-                    .append(queryParameters.getOrganization());
+                    .append(getQueryParameters.getOrganization());
         }
 
-        if (queryParameters.getSort() != null) {
+        if (getQueryParameters.getSort() != null) {
             stringBuilder
                     .append("&sort=")
-                    .append(queryParameters.getSort());
+                    .append(getQueryParameters.getSort());
         }
 
-        if (queryParameters.getChannelType() != null) {
+        if (getQueryParameters.getChannelType() != null) {
             stringBuilder
                     .append("&type=")
-                    .append(queryParameters.getChannelType().toString().toLowerCase());
+                    .append(getQueryParameters.getChannelType().toString().toLowerCase());
         }
 
-        if (queryParameters.getChannelId() != null) {
+        if (getQueryParameters.getChannelId() != null) {
             stringBuilder
                     .append("&channel_id=")
-                    .append(queryParameters.getChannelId());
+                    .append(getQueryParameters.getChannelId());
         }
 
-        if (queryParameters.getVideoId() != null) {
+        if (getQueryParameters.getVideoId() != null) {
             stringBuilder
                     .append("&id=")
-                    .append(queryParameters.getVideoId());
+                    .append(getQueryParameters.getVideoId());
         }
 
-        if (queryParameters.getExtraInfo() != null) {
+        if (getQueryParameters.getExtraInfo() != null) {
             stringBuilder.append("&include=");
-            buildIncludeParameter(queryParameters.getExtraInfo(), stringBuilder);
+            buildIncludeParameter(getQueryParameters.getExtraInfo(), stringBuilder);
         }
 
-        if (queryParameters.getMaxUpcomingHours() != null) {
+        if (getQueryParameters.getMaxUpcomingHours() != null) {
             stringBuilder
                     .append("&max_upcoming_hours=")
-                    .append(queryParameters.getMaxUpcomingHours());
+                    .append(getQueryParameters.getMaxUpcomingHours());
         }
 
-        if(queryParameters.getMentionedChannelId() != null) {
+        if(getQueryParameters.getMentionedChannelId() != null) {
             stringBuilder
                     .append("&mentioned_channel_id=")
-                    .append(queryParameters.getMentionedChannelId());
+                    .append(getQueryParameters.getMentionedChannelId());
         }
 
-        if(queryParameters.getStatus() != null) {
+        if(getQueryParameters.getStatus() != null) {
             stringBuilder
                     .append("&status=")
-                    .append(queryParameters.getStatus().toString().toLowerCase());
+                    .append(getQueryParameters.getStatus().toString().toLowerCase());
         }
 
-        if(queryParameters.getTopic() != null) {
+        if(getQueryParameters.getTopic() != null) {
             stringBuilder
                     .append("&topic=")
-                    .append(queryParameters.getTopic());
+                    .append(getQueryParameters.getTopic());
         }
 
-        if(queryParameters.getVideoType() != null) {
+        if(getQueryParameters.getVideoType() != null) {
             stringBuilder
                     .append("&type=")
-                    .append(queryParameters.getVideoType().toString().toLowerCase());
+                    .append(getQueryParameters.getVideoType().toString().toLowerCase());
         }
 
-        if(queryParameters.getFrom() != null) {
+        if(getQueryParameters.getFrom() != null) {
             stringBuilder
                     .append("&from=")
-                    .append(queryParameters.getFrom());
+                    .append(getQueryParameters.getFrom());
         }
 
-        if(queryParameters.getTo() != null) {
+        if(getQueryParameters.getTo() != null) {
             stringBuilder.append("&to")
-                    .append(queryParameters.getTo());
+                    .append(getQueryParameters.getTo());
         }
     }
 

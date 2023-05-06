@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class QueryParameters {
+public class GetQueryParameters {
 
     String channelId;
     String videoId;
@@ -20,7 +20,7 @@ public class QueryParameters {
     Integer maxUpcomingHours;
     String mentionedChannelId;
     Integer offset;
-    SortOrder sortOrder;
+    String sortOrder;
     String organization;
     String sort;
     String topic;

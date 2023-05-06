@@ -6,17 +6,15 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import constants.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import model.Channel;
-import model.QueryParameters;
+import model.GetQueryParameters;
+import model.PostQueryParameters;
 import model.Video;
 import org.junit.jupiter.api.*;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +30,10 @@ public class HolodexClientTest {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    QueryParameters queryParameters;
+    private GetQueryParameters getQueryParameters;
+
+    private PostQueryParameters postQueryParameters;
+
 
     @BeforeAll
     public static void setup() {
@@ -44,7 +45,8 @@ public class HolodexClientTest {
 
     @BeforeEach
     public void beforeEach() {
-        queryParameters = new QueryParameters();
+        getQueryParameters = new GetQueryParameters();
+        postQueryParameters = new PostQueryParameters();
     }
 
     /*
@@ -79,9 +81,9 @@ public class HolodexClientTest {
     @DisplayName("List Channels by Type (Vtuber)")
     @Order(3)
     public void listChannelsVtuberTypeTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelType(ChannelType.VTUBER);
+        getQueryParameters.setChannelType(ChannelType.VTUBER);
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         List<String> channelTypes = new ArrayList<>();
 
@@ -97,9 +99,9 @@ public class HolodexClientTest {
     @DisplayName("List Channels by Type (Subber)")
     @Order(4)
     public void listChannelsSubberTypeTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelType(ChannelType.SUBBER);
+        getQueryParameters.setChannelType(ChannelType.SUBBER);
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         List<String> channelTypes = new ArrayList<>();
 
@@ -115,10 +117,10 @@ public class HolodexClientTest {
     @DisplayName("List Channels by Language")
     @Order(5)
     public void listChannelsByLanguageTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setLanguages(new Languages[]{Languages.ES});
-        queryParameters.setChannelType(ChannelType.SUBBER);
+        getQueryParameters.setLanguages(new Languages[]{Languages.ES});
+        getQueryParameters.setChannelType(ChannelType.SUBBER);
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         assertEquals(channels.get(0).getName(), "F F Traducciones");
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(channels));
@@ -128,9 +130,9 @@ public class HolodexClientTest {
     @DisplayName("List Channels with a Limit")
     @Order(6)
     public void listChannelsLimitTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setLimit(5);
+        getQueryParameters.setLimit(5);
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         assertEquals(5, channels.size());
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(channels));
@@ -140,9 +142,9 @@ public class HolodexClientTest {
     @DisplayName("List Channels with an Offset")
     @Order(7)
     public void listChannelsOffsetTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setOffset(6);
+        getQueryParameters.setOffset(6);
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         assertTrue(channels.size() > 1);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(channels));
@@ -152,9 +154,9 @@ public class HolodexClientTest {
     @DisplayName("List Channels in Ascending SortOrder")
     @Order(8)
     public void listChannelsOrderAscTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setSortOrder(SortOrder.ASC);
+        getQueryParameters.setSortOrder(SortOrder.ASC);
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         assertTrue(channels.size() > 1);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(channels));
@@ -164,9 +166,9 @@ public class HolodexClientTest {
     @DisplayName("List Channels in Descending SortOrder")
     @Order(9)
     public void listChannelsOrderDescTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setSortOrder(SortOrder.DESC);
+        getQueryParameters.setSortOrder(SortOrder.DESC);
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         assertTrue(channels.size() > 1);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(channels));
@@ -176,9 +178,9 @@ public class HolodexClientTest {
     @DisplayName("List Channels by Organization")
     @Order(10)
     public void listChannelsByOrgTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setOrganization(Organizations.HOLOLIVE);
+        getQueryParameters.setOrganization(Organizations.HOLOLIVE);
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         List<String> organizations = new ArrayList<>();
 
@@ -194,9 +196,9 @@ public class HolodexClientTest {
     @DisplayName("List Channels sorting them by field")
     @Order(11)
     public void listChannelsSortTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setSort("subscriber_count");
+        getQueryParameters.setSort("subscriber_count");
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         int channelsIndexZeroSubscriberCount = Integer.parseInt(channels.get(0).getSubscriberCount());
         int channelsIndexOneSubscriberCount = Integer.parseInt(channels.get(1).getSubscriberCount());
@@ -209,15 +211,15 @@ public class HolodexClientTest {
     @DisplayName("List Channels All Parameters")
     @Order(12)
     public void listChannelsAllParametersTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setLanguages(new Languages[]{Languages.JA});
-        queryParameters.setLimit(5);
-        queryParameters.setOffset(5);
-        queryParameters.setSortOrder(SortOrder.ASC);
-        queryParameters.setOrganization(Organizations.HOLOLIVE);
-        queryParameters.setSort("clip_count");
-        queryParameters.setChannelType(ChannelType.VTUBER);
+        getQueryParameters.setLanguages(new Languages[]{Languages.JA});
+        getQueryParameters.setLimit(5);
+        getQueryParameters.setOffset(5);
+        getQueryParameters.setSortOrder(SortOrder.ASC);
+        getQueryParameters.setOrganization(Organizations.HOLOLIVE);
+        getQueryParameters.setSort("clip_count");
+        getQueryParameters.setChannelType(ChannelType.VTUBER);
 
-        List<Channel> channels = holodexClient.listChannels(queryParameters);
+        List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
         assertNotNull(channels);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(channels));
@@ -287,10 +289,10 @@ public class HolodexClientTest {
     @Order(16)
     // This test will fail if the stream ends
     public void getLiveAndUpcomingVideosVideoIdTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setVideoId("EheqWg4LOLA");
+        getQueryParameters.setVideoId("EheqWg4LOLA");
         String title = "【 睡眠導入 】聞くと眠くなるお姉さんの朗読 ラジオ 【 無人配信 】24/7 Unmanned Japanese story reading aloud 【 VTuber 河崎翆 作業用 安眠用 】";
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         assertEquals(videos.get(0).getTitle(), title);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -299,10 +301,10 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos with Video ID")
     @Order(17)
     public void getLiveAndUpcomingVideosIncludeTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setVideoId("EheqWg4LOLA");
-        queryParameters.setExtraInfo(new ExtraInfo[]{ExtraInfo.DESCRIPTION});
+        getQueryParameters.setVideoId("EheqWg4LOLA");
+        getQueryParameters.setExtraInfo(new ExtraInfo[]{ExtraInfo.DESCRIPTION});
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         assertNotNull(videos.get(0).getDescription());
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -312,9 +314,9 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos with Language Array")
     @Order(18)
     public void getLiveAndUpcomingVideosLanguageTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setLanguages(new Languages[]{Languages.ID, Languages.JA});
+        getQueryParameters.setLanguages(new Languages[]{Languages.ID, Languages.JA});
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         assertTrue(videos.size() > 1);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -324,9 +326,9 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos with Limit")
     @Order(19)
     public void getLiveAndUpcomingVideosLimitTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setLimit(5);
+        getQueryParameters.setLimit(5);
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         assertEquals(5, videos.size());
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -336,9 +338,9 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos with Max Upcoming Hours")
     @Order(20)
     public void getLiveAndUpcomingVideosMaxUpcomingHoursTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setMaxUpcomingHours(50);
+        getQueryParameters.setMaxUpcomingHours(50);
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         assertTrue(videos.size() > 1);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -351,9 +353,9 @@ public class HolodexClientTest {
     // You'll need to provide a new title every few days
     public void getLiveAndUpcomingVideosMentionedChannelIdTest() throws UnirestException, JsonProcessingException {
         String title = "【#ホロライブワールド】GWマリオメーカー大会本番!!!!!!!!!!!!!!!ぺこ!【ホロライブ/兎田ぺこら】";
-        queryParameters.setMentionedChannelId("UCO_aKKYxn4tvrqPjcTzZ6EQ");
+        getQueryParameters.setMentionedChannelId("UCO_aKKYxn4tvrqPjcTzZ6EQ");
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         assertEquals(videos.get(0).getTitle(), title);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -363,9 +365,9 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos Offset")
     @Order(22)
     public void getLiveAndUpcomingVideosOffsetTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setOffset(6);
+        getQueryParameters.setOffset(6);
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         assertTrue(videos.size() > 1);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -375,14 +377,16 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos in Ascending Order")
     @Order(23)
     public void getLiveAndUpcomingVideosAscTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setSortOrder(SortOrder.ASC);
+        getQueryParameters.setSortOrder(SortOrder.ASC);
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
+
+        int lastIndex = videos.size() - 1;
 
         OffsetDateTime indexZeroAvailableAtDate = videos.get(0).getAvailableAt();
-        OffsetDateTime indexOneAvailableAtDate = videos.get(1).getAvailableAt();
+        OffsetDateTime lastIndexAvailableAtDate = videos.get(lastIndex).getAvailableAt();
 
-        assertTrue(indexZeroAvailableAtDate.isBefore(indexOneAvailableAtDate));
+        assertTrue(indexZeroAvailableAtDate.isBefore(lastIndexAvailableAtDate));
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
     }
 
@@ -390,14 +394,16 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos in Descending Order")
     @Order(24)
     public void getLiveAndUpcomingVideosDescTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setSortOrder(SortOrder.DESC);
+        getQueryParameters.setSortOrder(SortOrder.DESC);
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
+
+        int lastIndex = videos.size() - 1;
 
         OffsetDateTime indexZeroAvailableAtDate = videos.get(0).getAvailableAt();
-        OffsetDateTime indexOneAvailableAtDate = videos.get(1).getAvailableAt();
+        OffsetDateTime lastIndexAvailableAtDate = videos.get(lastIndex).getAvailableAt();
 
-        assertTrue(indexZeroAvailableAtDate.isAfter(indexOneAvailableAtDate));
+        assertTrue(indexZeroAvailableAtDate.isAfter(lastIndexAvailableAtDate));
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
     }
 
@@ -407,9 +413,9 @@ public class HolodexClientTest {
     // This endpoint includes other organizations that are collabing with people from the
     // specified organization, that's why I didn't use assertTrue(organizations.stream().allMatch("org"::equals));
     public void getLiveAndUpcomingByOrgTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setOrganization(Organizations.HOLOLIVE);
+        getQueryParameters.setOrganization(Organizations.HOLOLIVE);
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         assertEquals(videos.get(0).getChannel().getOrg(), "Hololive");
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -419,9 +425,9 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos Sort by Field")
     @Order(26)
     public void getLiveAndUpcomingSortByFieldTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setSort("live_viewers");
+        getQueryParameters.setSort("live_viewers");
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         int videosIndexZeroLiveViewers = videos.get(0).getLiveViewers();
         int videosIndexOneLiveViewers = videos.get(1).getLiveViewers();
@@ -434,9 +440,9 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos by Status")
     @Order(27)
     public void getLiveAndUpcomingByStatusTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setStatus(Status.UPCOMING);
+        getQueryParameters.setStatus(Status.UPCOMING);
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         List<String> statuses = new ArrayList<>();
 
@@ -452,9 +458,9 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos by Topic")
     @Order(28)
     public void getLiveAndUpcomingByTopicTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setTopic("singing");
+        getQueryParameters.setTopic("singing");
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         List<String> topics = new ArrayList<>();
 
@@ -470,9 +476,9 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos by Video Type (Clip)")
     @Order(29)
     public void getLiveAndUpcomingByVideoTypeClipTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setVideoType(VideoType.CLIP);
+        getQueryParameters.setVideoType(VideoType.CLIP);
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         List<String> videoTypes = new ArrayList<>();
 
@@ -488,9 +494,9 @@ public class HolodexClientTest {
     @DisplayName("Get Live and Upcoming Videos by Video Type (Stream)")
     @Order(29)
     public void getLiveAndUpcomingByVideoTypeStreamTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setVideoType(VideoType.STREAM);
+        getQueryParameters.setVideoType(VideoType.STREAM);
 
-        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(queryParameters);
+        List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
         List<String> videoTypes = new ArrayList<>();
 
@@ -521,9 +527,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos by Channel ID")
     @Order(31)
     public void getVideosByChannelIdTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         assertEquals(videos.get(0).getChannel().getName(), "Suisei Channel");
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -535,9 +541,9 @@ public class HolodexClientTest {
     public void getVideosByMinimumDateTest() throws UnirestException, JsonProcessingException, ParseException {
         OffsetDateTime offsetDateTime = OffsetDateTime.parse("2019-08-24T14:15:22Z");
 
-        queryParameters.setFrom(offsetDateTime);
+        getQueryParameters.setFrom(offsetDateTime);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         assertTrue(videos.get(0).getAvailableAt().isAfter(offsetDateTime));
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -547,9 +553,9 @@ public class HolodexClientTest {
     @DisplayName("Get Video by Video ID")
     @Order(33)
     public void getVideosByVideoIdTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setVideoId("8ZdLXELdF9Q");
+        getQueryParameters.setVideoId("8ZdLXELdF9Q");
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         assertEquals(videos.get(0).getTitle(), "『VIOLET』 - Ninomae Ina'nis");
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -559,9 +565,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos by Extra Info")
     @Order(34)
     public void getVideosByExtraInfoTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setExtraInfo(new ExtraInfo[]{ExtraInfo.DESCRIPTION});
+        getQueryParameters.setExtraInfo(new ExtraInfo[]{ExtraInfo.DESCRIPTION});
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         assertNotNull(videos.get(0).getDescription());
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -571,9 +577,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos by Language")
     @Order(35)
     public void getVideosByLanguageTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setLanguages(new Languages[]{Languages.JA});
+        getQueryParameters.setLanguages(new Languages[]{Languages.JA});
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         List<String> languages = new ArrayList<>();
 
@@ -589,9 +595,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos with a Limit")
     @Order(36)
     public void getVideosLimitTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setLimit(5);
+        getQueryParameters.setLimit(5);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         assertEquals(videos.size(), 5);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -603,9 +609,9 @@ public class HolodexClientTest {
     public void getVideosByMaximumUpcomingHoursTest() throws UnirestException, JsonProcessingException {
         OffsetDateTime tomorrow = OffsetDateTime.now(ZoneOffset.UTC).plusDays(1);
 
-        queryParameters.setMaxUpcomingHours(24);
+        getQueryParameters.setMaxUpcomingHours(24);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         assertTrue(videos.get(0).getAvailableAt().isBefore(tomorrow));
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -615,9 +621,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos By Mentioned Channel ID")
     @Order(38)
     public void getVideosByMentionedChannelIdTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setMentionedChannelId("UC1DCedRgGHBdm81E1llLhOQ");
+        getQueryParameters.setMentionedChannelId("UC1DCedRgGHBdm81E1llLhOQ");
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         assertEquals(videos.get(0).getId(), "HMV6xHHumVg");
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -627,9 +633,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos with Offset")
     @Order(39)
     public void getVideosOffsetTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setOffset(6);
+        getQueryParameters.setOffset(6);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         assertEquals(videos.get(0).getId(), "9MVcIlxP0eI");
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -639,14 +645,16 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Sorting them in Ascending Order")
     @Order(40)
     public void getVideosAscOrderTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setSortOrder(SortOrder.ASC);
+        getQueryParameters.setSortOrder(SortOrder.ASC);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
+
+        int lastIndex = videos.size() - 1;
 
         OffsetDateTime indexZeroAvailableAtDate = videos.get(0).getAvailableAt();
-        OffsetDateTime indexOneAvailableAtDate = videos.get(1).getAvailableAt();
+        OffsetDateTime lastIndexAvailableAtDate = videos.get(lastIndex).getAvailableAt();
 
-        assertTrue(indexZeroAvailableAtDate.isBefore(indexOneAvailableAtDate));
+        assertTrue(indexZeroAvailableAtDate.isBefore(lastIndexAvailableAtDate));
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
     }
 
@@ -654,14 +662,16 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Sorting them in Descending Order")
     @Order(41)
     public void getVideosDescOrderTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setSortOrder(SortOrder.DESC);
+        getQueryParameters.setSortOrder(SortOrder.DESC);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
+
+        int lastIndex = videos.size() - 1;
 
         OffsetDateTime indexZeroAvailableAtDate = videos.get(0).getAvailableAt();
-        OffsetDateTime indexOneAvailableAtDate = videos.get(1).getAvailableAt();
+        OffsetDateTime lastIndexAvailableAtDate = videos.get(lastIndex).getAvailableAt();
 
-        assertTrue(indexZeroAvailableAtDate.isAfter(indexOneAvailableAtDate));
+        assertTrue(indexZeroAvailableAtDate.isAfter(lastIndexAvailableAtDate));
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
     }
 
@@ -669,9 +679,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos by Organization")
     @Order(42)
     public void getVideosByOrganizationTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setOrganization(Organizations.INDEPENDENTS);
+        getQueryParameters.setOrganization(Organizations.INDEPENDENTS);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         List<String> organizations = new ArrayList<>();
 
@@ -687,9 +697,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Sorting them by Field")
     @Order(43)
     public void getVideosSortByFieldTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setSort("duration");
+        getQueryParameters.setSort("duration");
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         int indexZeroDuration = videos.get(0).getDuration();
         int indexOneDuration = videos.get(1).getDuration();
@@ -702,9 +712,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos by Status")
     @Order(44)
     public void getVideosByStatusTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setStatus(Status.LIVE);
+        getQueryParameters.setStatus(Status.LIVE);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         List<String> statuses = new ArrayList<>();
 
@@ -722,9 +732,9 @@ public class HolodexClientTest {
     public void getVideosByMaximumDateTest() throws UnirestException, JsonProcessingException {
         OffsetDateTime maximumDate = OffsetDateTime.parse("2019-08-24T14:15:22Z");
 
-        queryParameters.setTo(maximumDate);
+        getQueryParameters.setTo(maximumDate);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         assertTrue(videos.get(0).getAvailableAt().isBefore(maximumDate));
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -734,9 +744,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos by Topic")
     @Order(46)
     public void getVideosByTopicTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setTopic("singing");
+        getQueryParameters.setTopic("singing");
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         List<String> topics = new ArrayList<>();
 
@@ -752,9 +762,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos by Video Type (Stream)")
     @Order(47)
     public void getVideosByVideoTypeStreamTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setVideoType(VideoType.STREAM);
+        getQueryParameters.setVideoType(VideoType.STREAM);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         List<String> videoTypes = new ArrayList<>();
 
@@ -770,9 +780,9 @@ public class HolodexClientTest {
     @DisplayName("Get Videos by Video Type (Clip)")
     @Order(48)
     public void getVideosByVideoTypeClipTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setVideoType(VideoType.CLIP);
+        getQueryParameters.setVideoType(VideoType.CLIP);
 
-        List<Video> videos = holodexClient.getVideos(queryParameters);
+        List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         List<String> videoTypes = new ArrayList<>();
 
@@ -793,10 +803,10 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel (Clips)")
     @Order(49)
     public void getVideosRelatedToChannelVideoTypeClipsTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
-        queryParameters.setVideoType(VideoType.CLIPS);
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setVideoType(VideoType.CLIPS);
 
-        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(getQueryParameters);
 
         List<String> videoTypes = new ArrayList<>();
 
@@ -812,10 +822,10 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel (Videos)")
     @Order(50)
     public void getVideosRelatedToChannelVideoTypeVideosTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
-        queryParameters.setVideoType(VideoType.VIDEOS);
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setVideoType(VideoType.VIDEOS);
 
-        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(getQueryParameters);
 
         List<String> channelNames = new ArrayList<>();
 
@@ -831,10 +841,10 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel (Collabs)")
     @Order(51)
     public void getVideosRelatedToChannelVideoTypeCollabsTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
-        queryParameters.setVideoType(VideoType.COLLABS);
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setVideoType(VideoType.COLLABS);
 
-        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(getQueryParameters);
 
         List<String> channelNames = new ArrayList<>();
 
@@ -850,10 +860,10 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel Null Channel ID")
     @Order(52)
     public void getVideosRelatedToChannelNullChannelIdTest() {
-        queryParameters.setVideoType(VideoType.COLLABS);
+        getQueryParameters.setVideoType(VideoType.COLLABS);
 
         assertThrows(RuntimeException.class, () -> {
-            holodexClient.getVideosRelatedToChannel(queryParameters);
+            holodexClient.getVideosRelatedToChannel(getQueryParameters);
         });
     }
 
@@ -861,10 +871,10 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel Null Video Type")
     @Order(53)
     public void getVideosRelatedToChannelNullVideoTypeTest() {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
 
         assertThrows(RuntimeException.class, () -> {
-            holodexClient.getVideosRelatedToChannel(queryParameters);
+            holodexClient.getVideosRelatedToChannel(getQueryParameters);
         });
     }
 
@@ -872,11 +882,11 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel with Include parameter")
     @Order(54)
     public void getVideosRelatedToChannelInludeParameterTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
-        queryParameters.setVideoType(VideoType.CLIPS);
-        queryParameters.setExtraInfo(new ExtraInfo[]{ExtraInfo.DESCRIPTION});
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setVideoType(VideoType.CLIPS);
+        getQueryParameters.setExtraInfo(new ExtraInfo[]{ExtraInfo.DESCRIPTION});
 
-        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(getQueryParameters);
 
         assertNotNull(videos.get(0).getDescription());
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -886,11 +896,11 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel Filter Clips by Language")
     @Order(55)
     public void getVideosRelatedToChannelFilterClipsByLanguageTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
-        queryParameters.setVideoType(VideoType.CLIPS);
-        queryParameters.setLanguages(new Languages[]{Languages.JA, Languages.ES});
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setVideoType(VideoType.CLIPS);
+        getQueryParameters.setLanguages(new Languages[]{Languages.JA, Languages.ES});
 
-        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(getQueryParameters);
 
         int total = 0;
 
@@ -908,11 +918,11 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel Filter Collabs by Language")
     @Order(56)
     public void getVideosRelatedToChannelFilterCollabsByLanguageTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
-        queryParameters.setVideoType(VideoType.COLLABS);
-        queryParameters.setLanguages(new Languages[]{Languages.JA, Languages.ES});
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setVideoType(VideoType.COLLABS);
+        getQueryParameters.setLanguages(new Languages[]{Languages.JA, Languages.ES});
 
-        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(getQueryParameters);
 
         assertTrue(videos.size() > 0);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -922,12 +932,12 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel Filter Collabs by Language")
     @Order(57)
     public void getVideosRelatedToChannelFilterVideosByLanguageTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
-        queryParameters.setVideoType(VideoType.VIDEOS);
-        queryParameters.setLanguages(new Languages[]{Languages.JA, Languages.ES});
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setVideoType(VideoType.VIDEOS);
+        getQueryParameters.setLanguages(new Languages[]{Languages.JA, Languages.ES});
 
         assertThrows(RuntimeException.class, () -> {
-            holodexClient.getVideosRelatedToChannel(queryParameters);
+            holodexClient.getVideosRelatedToChannel(getQueryParameters);
         });
     }
 
@@ -935,11 +945,11 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel with Limit")
     @Order(57)
     public void getVideosRelatedToChannelLimitTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
-        queryParameters.setVideoType(VideoType.VIDEOS);
-        queryParameters.setLimit(5);
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setVideoType(VideoType.VIDEOS);
+        getQueryParameters.setLimit(5);
 
-        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(getQueryParameters);
 
         assertEquals(videos.size(), 5);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -949,11 +959,11 @@ public class HolodexClientTest {
     @DisplayName("Get Videos Related to Channel with Offset")
     @Order(58)
     public void getVideosRelatedToChannelOffsetTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
-        queryParameters.setVideoType(VideoType.VIDEOS);
-        queryParameters.setOffset(5);
+        getQueryParameters.setChannelId("UC5CwaMl1eIgY8h02uZw7u8A");
+        getQueryParameters.setVideoType(VideoType.VIDEOS);
+        getQueryParameters.setOffset(5);
 
-        List<Video> videos = holodexClient.getVideosRelatedToChannel(queryParameters);
+        List<Video> videos = holodexClient.getVideosRelatedToChannel(getQueryParameters);
 
         assertTrue(videos.size() > 0);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -968,14 +978,14 @@ public class HolodexClientTest {
     @DisplayName("Get Live / Upcoming Videos for a set of Channels")
     @Order(59)
     public void getLiveOrUpcomingVideosForSetOfChannelsTest() throws UnirestException, JsonProcessingException {
-        queryParameters.setChannelIds(new String[]{
+        getQueryParameters.setChannelIds(new String[]{
                 "UC5CwaMl1eIgY8h02uZw7u8A", // Suisei
                 "UC1DCedRgGHBdm81E1llLhOQ", // Pekora
                 "UCO_aKKYxn4tvrqPjcTzZ6EQ", // Fauna
                 "UCMwGHR0BTZuLsmjY_NT5Pwg" // Ina
         });
 
-        List<Video> videos = holodexClient.getLiveOrUpcomingVideosForSetOfChannels(queryParameters);
+        List<Video> videos = holodexClient.getLiveOrUpcomingVideosForSetOfChannels(getQueryParameters);
 
         assertNotNull(videos);
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
@@ -986,8 +996,58 @@ public class HolodexClientTest {
     @Order(60)
     public void getLiveOrUpcomingVideosForSetOfChannelsNullChannelsTest() {
         assertThrows(RuntimeException.class, () -> {
-            holodexClient.getLiveOrUpcomingVideosForSetOfChannels(queryParameters);
+            holodexClient.getLiveOrUpcomingVideosForSetOfChannels(getQueryParameters);
         });
+    }
+
+
+    /*
+    *
+    * Tests for post-search-videoSearch (https://holodex.net/api/v2/search/videoSearch)
+    *
+    * */
+    @Test
+    @DisplayName("Search a List of Videos")
+    @Order(61)
+    public void searchVideosTest() throws UnirestException, JsonProcessingException {
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        assertNotNull(videos);
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos Sort by Newest")
+    @Order(61)
+    public void searchVideosSortByNewestTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setSort(SortOrder.NEWEST);
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        int lastIndex = videos.size() - 1;
+
+        OffsetDateTime indexZeroAvailableAtDate = videos.get(0).getAvailableAt();
+        OffsetDateTime lastIndexAvailableAtDate = videos.get(lastIndex).getAvailableAt();
+
+        assertTrue(indexZeroAvailableAtDate.isAfter(lastIndexAvailableAtDate));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
+    }
+
+    @Test
+    @DisplayName("Search a List of Videos Sort by Oldest")
+    @Order(62)
+    public void searchVideosSortByOldestTest() throws UnirestException, JsonProcessingException {
+        postQueryParameters.setSort(SortOrder.OLDEST);
+
+        List<Video> videos = holodexClient.searchVideos(postQueryParameters);
+
+        int lastIndex = videos.size() - 1;
+
+        OffsetDateTime indexZeroAvailableAtDate = videos.get(0).getAvailableAt();
+        OffsetDateTime lastIndexAvailableAtDate = videos.get(lastIndex).getAvailableAt();
+
+        assertTrue(indexZeroAvailableAtDate.isBefore(lastIndexAvailableAtDate));
+        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
     }
 
 }
