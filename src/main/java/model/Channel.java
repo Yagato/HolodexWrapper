@@ -87,7 +87,8 @@ public class Channel {
     private String ytUploadsId;
 
     @JsonProperty("crawled_at")
-    private String crawledAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
+    private OffsetDateTime crawledAt;
 
     @JsonProperty("created_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
