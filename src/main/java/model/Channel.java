@@ -54,7 +54,8 @@ public class Channel {
     private String subscriberCount;
 
     @JsonProperty("comments_crawled_at")
-    private String commentsCrawledAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
+    private OffsetDateTime commentsCrawledAt;
 
     @JsonProperty("view_count")
     private String viewCount;
