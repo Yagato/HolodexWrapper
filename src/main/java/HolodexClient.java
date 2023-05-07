@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import constants.SortOrder;
 import model.Channel;
 import model.GetQueryParameters;
 import model.PostQueryParameters;
@@ -72,7 +71,8 @@ public class HolodexClient {
                 .header("X-APIKEY", HOLODEX_API_KEY)
                 .asString();
 
-        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {
+        });
     }
 
     public List<Video> getVideos(GetQueryParameters getQueryParameters)
@@ -88,7 +88,8 @@ public class HolodexClient {
                 .header("X-APIKEY", HOLODEX_API_KEY)
                 .asString();
 
-        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {
+        });
     }
 
     public Channel getChannelInformation(String channelId) throws UnirestException, JsonProcessingException {
@@ -102,15 +103,15 @@ public class HolodexClient {
 
     public List<Video> getVideosRelatedToChannel(GetQueryParameters getQueryParameters)
             throws UnirestException, JsonProcessingException {
-        if(getQueryParameters.getChannelId() == null) {
+        if (getQueryParameters.getChannelId() == null) {
             throw new RuntimeException("Channel ID can't be null");
         }
 
-        if(getQueryParameters.getVideoType() == null) {
+        if (getQueryParameters.getVideoType() == null) {
             throw new RuntimeException("Video Type can't be null");
         }
 
-        if(getQueryParameters.getLanguages() != null && getQueryParameters.getVideoType().equals("videos")) {
+        if (getQueryParameters.getLanguages() != null && getQueryParameters.getVideoType().equals("videos")) {
             throw new RuntimeException("Can't filter VIDEOS by language");
         }
 
@@ -134,12 +135,13 @@ public class HolodexClient {
                 .header("X-APIKEY", HOLODEX_API_KEY)
                 .asString();
 
-        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {
+        });
     }
 
     public List<Video> getLiveOrUpcomingVideosForSetOfChannels(GetQueryParameters getQueryParameters)
             throws UnirestException, JsonProcessingException {
-        if(getQueryParameters.getChannelIds() == null) {
+        if (getQueryParameters.getChannelIds() == null) {
             throw new RuntimeException("Channel IDs can't be null");
         }
 
@@ -154,7 +156,8 @@ public class HolodexClient {
                 .header("X-APIKEY", HOLODEX_API_KEY)
                 .asString();
 
-        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {});
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Video>>() {
+        });
     }
 
     public Video getVideoMetadata(String videoId,
@@ -196,7 +199,8 @@ public class HolodexClient {
                 .header("X-APIKEY", HOLODEX_API_KEY)
                 .asString();
 
-        return objectMapper.readValue(response.getBody(), new TypeReference<List<Channel>>() {});
+        return objectMapper.readValue(response.getBody(), new TypeReference<List<Channel>>() {
+        });
     }
 
     public List<Channel> listChannels(GetQueryParameters getQueryParameters)
@@ -235,7 +239,7 @@ public class HolodexClient {
     public List<Video> searchCommentsVideos(PostQueryParameters postQueryParameters)
             throws UnirestException, JsonProcessingException {
 
-        if(postQueryParameters.getComment() == null) {
+        if (postQueryParameters.getComment() == null) {
             throw new RuntimeException("Comment can't be null");
         }
 
@@ -282,10 +286,10 @@ public class HolodexClient {
                     .append(getQueryParameters.getOrganization());
         }
 
-        if (getQueryParameters.getSort() != null) {
+        if (getQueryParameters.getSortByField() != null) {
             stringBuilder
                     .append("&sort=")
-                    .append(getQueryParameters.getSort());
+                    .append(getQueryParameters.getSortByField());
         }
 
         if (getQueryParameters.getChannelType() != null) {
@@ -317,37 +321,37 @@ public class HolodexClient {
                     .append(getQueryParameters.getMaxUpcomingHours());
         }
 
-        if(getQueryParameters.getMentionedChannelId() != null) {
+        if (getQueryParameters.getMentionedChannelId() != null) {
             stringBuilder
                     .append("&mentioned_channel_id=")
                     .append(getQueryParameters.getMentionedChannelId());
         }
 
-        if(getQueryParameters.getStatus() != null) {
+        if (getQueryParameters.getStatus() != null) {
             stringBuilder
                     .append("&status=")
                     .append(getQueryParameters.getStatus());
         }
 
-        if(getQueryParameters.getTopic() != null) {
+        if (getQueryParameters.getTopic() != null) {
             stringBuilder
                     .append("&topic=")
                     .append(getQueryParameters.getTopic());
         }
 
-        if(getQueryParameters.getVideoType() != null) {
+        if (getQueryParameters.getVideoType() != null) {
             stringBuilder
                     .append("&type=")
                     .append(getQueryParameters.getVideoType());
         }
 
-        if(getQueryParameters.getFrom() != null) {
+        if (getQueryParameters.getFrom() != null) {
             stringBuilder
                     .append("&from=")
                     .append(getQueryParameters.getFrom());
         }
 
-        if(getQueryParameters.getTo() != null) {
+        if (getQueryParameters.getTo() != null) {
             stringBuilder
                     .append("&to=")
                     .append(getQueryParameters.getTo());

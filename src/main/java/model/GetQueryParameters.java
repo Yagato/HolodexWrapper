@@ -1,6 +1,5 @@
 package model;
 
-import constants.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ public class GetQueryParameters {
     Integer offset;
     String sortOrder;
     String organization;
-    String sort;
+    String sortByField;
     String topic;
     String channelType;
     String[] extraInfo;

@@ -86,7 +86,7 @@ public class HolodexClientTest {
 
         List<String> channelTypes = new ArrayList<>();
 
-        for(Channel channel : channels) {
+        for (Channel channel : channels) {
             channelTypes.add(channel.getType());
         }
 
@@ -103,7 +103,7 @@ public class HolodexClientTest {
 
         List<String> channelTypes = new ArrayList<>();
 
-        for(Channel channel : channels) {
+        for (Channel channel : channels) {
             channelTypes.add(channel.getType());
         }
 
@@ -176,7 +176,7 @@ public class HolodexClientTest {
 
         List<String> organizations = new ArrayList<>();
 
-        for(Channel channel : channels) {
+        for (Channel channel : channels) {
             organizations.add(channel.getOrg());
         }
 
@@ -187,7 +187,7 @@ public class HolodexClientTest {
     @Test
     @DisplayName("List Channels sorting them by field")
     public void listChannelsSortTest() throws UnirestException, JsonProcessingException {
-        getQueryParameters.setSort("subscriber_count");
+        getQueryParameters.setSortByField("subscriber_count");
 
         List<Channel> channels = holodexClient.listChannels(getQueryParameters);
 
@@ -206,7 +206,7 @@ public class HolodexClientTest {
         getQueryParameters.setOffset(5);
         getQueryParameters.setSortOrder(SortOrder.ASC);
         getQueryParameters.setOrganization(Organizations.HOLOLIVE);
-        getQueryParameters.setSort("clip_count");
+        getQueryParameters.setSortByField("clip_count");
         getQueryParameters.setChannelType(ChannelType.VTUBER);
 
         List<Channel> channels = holodexClient.listChannels(getQueryParameters);
@@ -249,7 +249,6 @@ public class HolodexClientTest {
 
     @Test
     @DisplayName("Get Video Metadata filter with Language")
-    // Note: This endpoint doesn't seem to be working correctly (it doesn't filter any comments)
     public void getVideoMetadataFilterLanguageTest() throws UnirestException, JsonProcessingException {
         Video video = holodexClient.getVideoMetadata("Puyd1d445IM", null,
                 new String[]{Language.EN, Language.ES});
@@ -259,11 +258,11 @@ public class HolodexClientTest {
     }
 
     /*
-    *
-    * Tests for Query Live and Upcoming Videos (https://holodex.net/api/v2/live)
-    * Documentation: https://docs.holodex.net/docs/holodex/b675902a04ca9-query-live-and-upcoming-videos
-    *
-    * */
+     *
+     * Tests for Query Live and Upcoming Videos (https://holodex.net/api/v2/live)
+     * Documentation: https://docs.holodex.net/docs/holodex/b675902a04ca9-query-live-and-upcoming-videos
+     *
+     * */
     @Test
     @DisplayName("Get Live and Upcoming Videos with Channel ID")
     // This test will fail if the stream ends
@@ -298,6 +297,7 @@ public class HolodexClientTest {
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
         assertEquals(videos.get(0).getTitle(), title);
     }
+
     @Test
     @DisplayName("Get Live and Upcoming Videos with Video ID")
     public void getLiveAndUpcomingVideosIncludeTest() throws UnirestException, JsonProcessingException {
@@ -416,7 +416,7 @@ public class HolodexClientTest {
     @Test
     @DisplayName("Get Live and Upcoming Videos Sort by Field")
     public void getLiveAndUpcomingSortByFieldTest() throws UnirestException, JsonProcessingException {
-        getQueryParameters.setSort("live_viewers");
+        getQueryParameters.setSortByField("live_viewers");
 
         List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
@@ -436,7 +436,7 @@ public class HolodexClientTest {
 
         List<String> statuses = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             statuses.add(video.getStatus());
         }
 
@@ -453,7 +453,7 @@ public class HolodexClientTest {
 
         List<String> topics = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             topics.add(video.getTopicId());
         }
 
@@ -470,7 +470,7 @@ public class HolodexClientTest {
 
         List<String> videoTypes = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             videoTypes.add(video.getType());
         }
 
@@ -487,7 +487,7 @@ public class HolodexClientTest {
 
         List<String> videoTypes = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             videoTypes.add(video.getType());
         }
 
@@ -496,11 +496,11 @@ public class HolodexClientTest {
     }
 
     /*
-    *
-    * Tests for Query Videos (https://holodex.net/api/v2/videos)
-    * Documentation: https://docs.holodex.net/docs/holodex/ba328f7332280-query-videos
-    *
-    * */
+     *
+     * Tests for Query Videos (https://holodex.net/api/v2/videos)
+     * Documentation: https://docs.holodex.net/docs/holodex/ba328f7332280-query-videos
+     *
+     * */
     @Test
     @DisplayName("Get Videos")
     public void getVideosTest() throws UnirestException, JsonProcessingException {
@@ -662,7 +662,7 @@ public class HolodexClientTest {
 
         List<String> organizations = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             organizations.add(video.getChannel().getOrg());
         }
 
@@ -673,7 +673,7 @@ public class HolodexClientTest {
     @Test
     @DisplayName("Get Videos Sorting them by Field")
     public void getVideosSortByFieldTest() throws UnirestException, JsonProcessingException {
-        getQueryParameters.setSort("duration");
+        getQueryParameters.setSortByField("duration");
 
         List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
@@ -693,7 +693,7 @@ public class HolodexClientTest {
 
         List<String> statuses = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             statuses.add(video.getStatus());
         }
 
@@ -723,7 +723,7 @@ public class HolodexClientTest {
 
         List<String> topics = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             topics.add(video.getTopicId());
         }
 
@@ -740,7 +740,7 @@ public class HolodexClientTest {
 
         List<String> videoTypes = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             videoTypes.add(video.getType());
         }
 
@@ -757,7 +757,7 @@ public class HolodexClientTest {
 
         List<String> videoTypes = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             videoTypes.add(video.getType());
         }
 
@@ -766,11 +766,11 @@ public class HolodexClientTest {
     }
 
     /*
-    *
-    * Tests for Query Videos Related to Channel (https://holodex.net/api/v2/channels/{channelId}/{type})
-    * Documentation: https://docs.holodex.net/docs/holodex/643f06b1f7e4d-query-videos-related-to-channel
-    *
-    * */
+     *
+     * Tests for Query Videos Related to Channel (https://holodex.net/api/v2/channels/{channelId}/{type})
+     * Documentation: https://docs.holodex.net/docs/holodex/643f06b1f7e4d-query-videos-related-to-channel
+     *
+     * */
     @Test
     @DisplayName("Get Videos Related to Channel (Clips)")
     public void getVideosRelatedToChannelVideoTypeClipsTest() throws UnirestException, JsonProcessingException {
@@ -781,7 +781,7 @@ public class HolodexClientTest {
 
         List<String> videoTypes = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             videoTypes.add(video.getType());
         }
 
@@ -799,7 +799,7 @@ public class HolodexClientTest {
 
         List<String> channelNames = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             channelNames.add(video.getChannel().getName());
         }
 
@@ -817,7 +817,7 @@ public class HolodexClientTest {
 
         List<String> channelNames = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             channelNames.add(video.getChannel().getName());
         }
 
@@ -931,11 +931,11 @@ public class HolodexClientTest {
     }
 
     /*
-    *
-    * Tests for Quickly Access Live / Upcoming for a set of Channels (https://holodex.net/api/v2/users/live)
-    * Documentation: https://docs.holodex.net/docs/holodex/f1e355dc4cb79-quickly-access-live-upcoming-for-a-set-of-channels
-    *
-    * */
+     *
+     * Tests for Quickly Access Live / Upcoming for a set of Channels (https://holodex.net/api/v2/users/live)
+     * Documentation: https://docs.holodex.net/docs/holodex/f1e355dc4cb79-quickly-access-live-upcoming-for-a-set-of-channels
+     *
+     * */
     @Test
     @DisplayName("Get Live / Upcoming Videos for a set of Channels")
     public void getLiveOrUpcomingVideosForSetOfChannelsTest() throws UnirestException, JsonProcessingException {
@@ -962,11 +962,11 @@ public class HolodexClientTest {
 
 
     /*
-    *
-    * Tests for post-search-videoSearch (https://holodex.net/api/v2/search/videoSearch)
-    * Documentation: https://docs.holodex.net/docs/holodex/7ef9a63c3d44a-create-a-search-video-search
-    *
-    * */
+     *
+     * Tests for post-search-videoSearch (https://holodex.net/api/v2/search/videoSearch)
+     * Documentation: https://docs.holodex.net/docs/holodex/7ef9a63c3d44a-create-a-search-video-search
+     *
+     * */
     @Test
     @DisplayName("Search a List of Videos")
     public void searchVideosTest() throws UnirestException, JsonProcessingException {
@@ -1017,7 +1017,7 @@ public class HolodexClientTest {
 
         List<String> videoTypes = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             videoTypes.add(video.getType());
         }
 
@@ -1034,7 +1034,7 @@ public class HolodexClientTest {
 
         List<String> videoTypes = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             videoTypes.add(video.getType());
         }
 
@@ -1063,7 +1063,7 @@ public class HolodexClientTest {
 
         List<String> topics = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             topics.add(video.getTopicId());
         }
 
@@ -1140,11 +1140,11 @@ public class HolodexClientTest {
     }
 
     /*
-    *
-    * Tests for post-search-commentSearch (https://holodex.net/api/v2/search/commentSearch)
-    * Documentation: https://docs.holodex.net/docs/holodex/1485e15cbe9e2-create-a-search-comment-search
-    *
-    * */
+     *
+     * Tests for post-search-commentSearch (https://holodex.net/api/v2/search/commentSearch)
+     * Documentation: https://docs.holodex.net/docs/holodex/1485e15cbe9e2-create-a-search-comment-search
+     *
+     * */
     @Test
     @DisplayName("Search Comments in Videos")
     public void searchCommentsVideosTest() throws UnirestException, JsonProcessingException {
@@ -1155,7 +1155,7 @@ public class HolodexClientTest {
 
         List<List<Comment>> comments = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             comments.add(video.getComments());
         }
 
@@ -1169,7 +1169,7 @@ public class HolodexClientTest {
             for (Comment comment : commentList) {
                 String lowerCaseMessage = comment.getMessage().toLowerCase();
 
-                if(lowerCaseMessage.contains(word))
+                if (lowerCaseMessage.contains(word))
                     totalCommentsWithWord++;
             }
         }
@@ -1232,7 +1232,7 @@ public class HolodexClientTest {
 
         List<String> videoTypes = new ArrayList<>();
 
-        for(Video video : videos) {
+        for (Video video : videos) {
             videoTypes.add(video.getType());
         }
 
