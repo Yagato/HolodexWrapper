@@ -19,7 +19,7 @@ public class Organizations {
     public static final String EILENE_FAMILY = "Eilene%20Family";
     public static final String EMOECHI = "Emoechi";
     public static final String EIEN_PROJECT = "EIEN%20Project";
-    public static final String GUILD_CQ = "Guild CQ";
+    public static final String GUILD_CQ = "Guild%20CQ";
     public static final String HOSHIMEGURI_GAKUEN = "Hoshimeguri%20Gakuen";
     public static final String H_LIVE = "H.Live";
     public static final String IRIDORI = "Iridori";
