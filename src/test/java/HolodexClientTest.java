@@ -42,9 +42,10 @@ public class HolodexClientTest {
     }
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws InterruptedException {
         getQueryParameters = new GetQueryParameters();
         postQueryParameters = new PostQueryParameters();
+        //Thread.sleep(5000); // This is to avoid exceeding Holodex's request limit (80 per 2 minutes)
     }
 
     /*
@@ -600,14 +601,14 @@ public class HolodexClientTest {
     @Test
     @DisplayName("Get Videos By Mentioned Channel ID")
     // This test isn't easily reproducible due to the nature of this endpoint
-    // You'll have to change the expected video ID every few days
+    // You'll have to change the expected video ID every few days or even hours
     public void getVideosByMentionedChannelIdTest() throws UnirestException, JsonProcessingException {
         getQueryParameters.setMentionedChannelId("UC1DCedRgGHBdm81E1llLhOQ"); // Pekora
 
         List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
-        assertEquals(videos.get(0).getId(), "oRNm619BVts");
+        assertEquals(videos.get(0).getId(), "Esucap_bEY8");
     }
 
     @Test
