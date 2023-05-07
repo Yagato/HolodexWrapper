@@ -13,7 +13,7 @@ public class Organizations {
     public static final String AXEL_V = "Axel-V";
     public static final String AETHERIA = "Aetheria";
     public static final String AKIOAIR = "AkioAIR";
-    public static final String Chukorara = "Chukorara";
+    public static final String CHUKORARA = "Chukorara";
     public static final String CLOUD_HORIZON = "Cloud Horizon";
     public static final String CONNECTOPIA = "Connectopia";
     public static final String EILENE_FAMILY = "Eilene Family";
