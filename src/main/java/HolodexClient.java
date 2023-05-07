@@ -32,8 +32,8 @@ public class HolodexClient {
             throws UnirestException, JsonProcessingException {
         StringBuilder stringBuilder = new StringBuilder(URL + "live?");
 
-        if (channelId == null) {
-            throw new RuntimeException("videoId can't be null");
+        if (channelId == null || channelId.equals("")) {
+            throw new RuntimeException("channelId can't be null");
         }
 
         stringBuilder
@@ -219,8 +219,6 @@ public class HolodexClient {
     public List<Video> searchVideos(PostQueryParameters postQueryParameters)
             throws UnirestException, JsonProcessingException {
 
-        buildSearchRequest(postQueryParameters);
-
         HttpResponse<String> response = Unirest.post(URL + "search/videoSearch")
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
@@ -240,8 +238,6 @@ public class HolodexClient {
         if(postQueryParameters.getComment() == null) {
             throw new RuntimeException("Comment can't be null");
         }
-
-        buildSearchRequest(postQueryParameters);
 
         HttpResponse<String> response = Unirest.post(URL + "search/commentSearch")
                 .header("Content-Type", "application/json")
@@ -353,7 +349,7 @@ public class HolodexClient {
 
         if(getQueryParameters.getTo() != null) {
             stringBuilder
-                    .append("&to")
+                    .append("&to=")
                     .append(getQueryParameters.getTo());
         }
     }
@@ -365,20 +361,6 @@ public class HolodexClient {
             if (i < array.length - 1) {
                 stringBuilder.append(",");
             }
-        }
-    }
-
-    private void buildSearchRequest(PostQueryParameters postQueryParameters) {
-        if(postQueryParameters.getSort() == null) {
-            postQueryParameters.setSort(SortOrder.NEWEST);
-        }
-
-        if(postQueryParameters.getOffset() == null) {
-            postQueryParameters.setOffset(0);
-        }
-
-        if(postQueryParameters.getLimit() == null) {
-            postQueryParameters.setLimit(30);
         }
     }
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class PostQueryParameters {
 
     @JsonProperty("sort")
-    private String sort;
+    private String sort = SortOrder.NEWEST;
 
     @JsonProperty("lang")
     private String[] language;
@@ -25,7 +25,7 @@ public class PostQueryParameters {
     private String[] conditions;
 
     @JsonProperty("comment")
-    private String comment;
+    private String[] comment;
 
     @JsonProperty("topic")
     private String[] topics;
@@ -37,9 +37,9 @@ public class PostQueryParameters {
     private String[] organizations;
 
     @JsonProperty("offset")
-    private Integer offset;
+    private Integer offset = 0;
 
     @JsonProperty("limit")
-    private Integer limit;
+    private Integer limit = 30;
 
 }
