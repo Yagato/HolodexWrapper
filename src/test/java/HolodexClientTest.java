@@ -348,8 +348,8 @@ public class HolodexClientTest {
     // This test is not easily reproducible due to the nature of this endpoint
     // You'll need to provide a new title every few days
     public void getLiveAndUpcomingVideosMentionedChannelIdTest() throws UnirestException, JsonProcessingException {
-        String title = "【#神楽めあ理解度クイズ】神楽めあを一番理解しているのは誰だ!?【犬山たまき/神楽めあ/しぐれうい/舞元啓介/夕刻ロベル】";
-        getQueryParameters.setMentionedChannelId("UCANDOlYTJT7N5jlRC3zfzVA"); // Roberu
+        String title = "【FOREWARNED】エジプトの幽霊を調査しに行く ベルモンド・バンデラス視点【にじさんじ/アンジュ・カトリーナ/歌衣メイカ/アルランディス】";
+        getQueryParameters.setMentionedChannelId("UCKeAhJvy8zgXWbh9duVjIaQ"); //
 
         List<Video> videos = holodexClient.getLiveAndUpcomingVideos(getQueryParameters);
 
@@ -607,7 +607,7 @@ public class HolodexClientTest {
         List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
-        assertEquals(videos.get(0).getId(), "-cyahoEBLp8");
+        assertEquals(videos.get(0).getId(), "soFkDqlXL2E");
     }
 
     @Test
