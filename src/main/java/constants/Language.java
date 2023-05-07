@@ -9,5 +9,6 @@ public class Language {
     public final static String ID = "id";
     public final static String RU = "ru";
     public final static String KO = "ko";
+    public final static String FR = "fr";
 
 }
