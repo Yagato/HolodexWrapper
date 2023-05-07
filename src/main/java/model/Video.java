@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -21,7 +20,7 @@ public class Video {
     private String id;
 
     @JsonProperty("lang")
-    private String lang;
+    private String language;
 
     @JsonProperty("title")
     private String title;
@@ -62,10 +61,10 @@ public class Video {
     private int liveViewers;
 
     @JsonProperty("live_tl_count")
-    private LiveTranslator liveTlCount;
+    private LiveTranslator liveTranslatorCount;
 
     @JsonProperty("recent_live_tls")
-    private List<String> recentLiveTls;
+    private List<String> recentLiveTranslators;
 
     @JsonProperty("description")
     private String description;
@@ -80,16 +79,16 @@ public class Video {
     private Channel channel;
 
     @JsonProperty("clips")
-    private List<Clip> clips;
+    private List<RelatedVideo> clips;
 
     @JsonProperty("sources")
-    private List<Video> sources;
+    private List<RelatedVideo> sources;
 
     @JsonProperty("refers")
-    private List<Video> refers;
+    private List<RelatedVideo> refers;
 
     @JsonProperty("simulcasts")
-    private List<Video> simulcasts;
+    private List<RelatedVideo> simulcasts;
 
     @JsonProperty("mentions")
     private List<Channel> mentions;
@@ -101,7 +100,7 @@ public class Video {
     private List<Comment> comments;
 
     @JsonProperty("jp_name")
-    private String jpName;
+    private String japaneseName;
 
     @JsonProperty("link")
     private String link;
