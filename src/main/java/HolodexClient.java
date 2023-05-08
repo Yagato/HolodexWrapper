@@ -31,7 +31,7 @@ public class HolodexClient {
      * Method that makes a GET request to https://holodex.net/api/v2/live taking a channel ID as
      * its only parameter.
      *
-     * @param channelId a channel ID.
+     * @param channelId A channel ID.
      * @return A List of Video objects matching the given channel ID.
      * @throws UnirestException
      * @throws JsonProcessingException
