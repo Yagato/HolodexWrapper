@@ -39,7 +39,7 @@ implementation group: 'io.github.yagato', name: 'HolodexWrapper', version: '1.0.
 3. Enjoy!
 
 ```java
-HolodexClient holodexClient = new HolodexClient("YOU_API_KEY");
+HolodexClient holodexClient = new HolodexClient("YOUR_API_KEY");
 Channel channel = holodexClient.getChannelInformation("UC5CwaMl1eIgY8h02uZw7u8A");
 System.out.println(channel.getName()); // Suisei Channel
 System.out.println(channel.getOrg()); // Hololive
