@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.yagato/HolodexWrapper.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.yagato%22%20AND%20a:%22HolodexWrapper%22)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.yagato/HolodexWrapper.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.yagato/HolodexWrapper/1.0.0)
 
 # HolodexWrapper
 A Java wrapper for the [Holodex API](https://docs.holodex.net/docs/holodex/f4e6fa31af431-getting-started) developed with Java 11. 
