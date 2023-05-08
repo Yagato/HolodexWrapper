@@ -1,4 +1,4 @@
-package constants;
+package org.yagato.holodexwrapper.constants;
 
 public class VideoType {
 

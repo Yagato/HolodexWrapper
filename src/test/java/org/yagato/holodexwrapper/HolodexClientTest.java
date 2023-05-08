@@ -1,11 +1,13 @@
+package org.yagato.holodexwrapper;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import constants.*;
+import org.yagato.holodexwrapper.constants.*;
 import io.github.cdimascio.dotenv.Dotenv;
-import model.*;
+import org.yagato.holodexwrapper.model.*;
 import org.junit.jupiter.api.*;
 
 import java.text.ParseException;

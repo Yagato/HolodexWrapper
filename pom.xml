@@ -6,11 +6,30 @@
 
     <groupId>org.yagato</groupId>
     <artifactId>HolodexWrapper</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <packaging>jar</packaging>
+
+    <name>HolodexWrapper</name>
+    <url>http://maven.apache.org</url>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -51,7 +70,6 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.15.0</version>
         </dependency>
-
     </dependencies>
 
 </project>

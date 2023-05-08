@@ -1,4 +1,4 @@
-package model;
+package org.yagato.holodexwrapper.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

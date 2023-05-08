@@ -1,8 +1,7 @@
-package model;
+package org.yagato.holodexwrapper.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import constants.SortOrder;
-import constants.VideoType;
+import org.yagato.holodexwrapper.constants.SortOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
