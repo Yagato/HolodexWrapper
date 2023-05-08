@@ -1,7 +1,7 @@
-package org.yagato.holodexwrapper.model;
+package io.github.yagato.holodexwrapper.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.yagato.holodexwrapper.constants.SortOrder;
+import io.github.yagato.holodexwrapper.constants.SortOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

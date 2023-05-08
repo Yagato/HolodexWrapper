@@ -1,13 +1,13 @@
-package org.yagato.holodexwrapper;
+package io.github.yagato.holodexwrapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.yagato.holodexwrapper.constants.*;
+import io.github.yagato.holodexwrapper.constants.*;
+import io.github.yagato.holodexwrapper.model.*;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.yagato.holodexwrapper.model.*;
 import org.junit.jupiter.api.*;
 
 import java.text.ParseException;
@@ -609,7 +609,7 @@ public class HolodexClientTest {
         List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
-        assertEquals(videos.get(0).getId(), "IljoUx3YTlk");
+        assertEquals(videos.get(0).getId(), "zT4MdgxPHFw");
     }
 
     @Test
@@ -619,7 +619,7 @@ public class HolodexClientTest {
 
         List<Video> videos = holodexClient.getVideos(getQueryParameters);
 
-        assertEquals(videos.get(0).getId(), "9MVcIlxP0eI");
+        assertEquals(videos.get(0).getId(), "OmYr5XGr7DE");
         System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(videos));
     }
 

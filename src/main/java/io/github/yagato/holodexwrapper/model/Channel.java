@@ -1,4 +1,4 @@
-package org.yagato.holodexwrapper.model;
+package io.github.yagato.holodexwrapper.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

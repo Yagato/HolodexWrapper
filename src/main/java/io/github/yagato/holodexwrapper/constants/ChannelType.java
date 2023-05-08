@@ -1,4 +1,4 @@
-package org.yagato.holodexwrapper.constants;
+package io.github.yagato.holodexwrapper.constants;
 
 public class ChannelType {
 

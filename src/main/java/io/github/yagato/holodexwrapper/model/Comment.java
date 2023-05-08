@@ -1,4 +1,4 @@
-package org.yagato.holodexwrapper.model;
+package io.github.yagato.holodexwrapper.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,12 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Credits {
+public class Comment {
 
-    @JsonProperty("editor")
-    private Editor editor;
+    @JsonProperty("comment_key")
+    private String commentKey;
 
-    @JsonProperty("bot")
-    private Bot bot;
+    @JsonProperty("video_id")
+    private String videoId;
+
+    @JsonProperty("message")
+    private String message;
 
 }

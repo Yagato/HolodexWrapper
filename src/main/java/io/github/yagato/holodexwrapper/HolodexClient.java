@@ -1,4 +1,4 @@
-package org.yagato.holodexwrapper;
+package io.github.yagato.holodexwrapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -8,10 +8,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.yagato.holodexwrapper.model.Channel;
-import org.yagato.holodexwrapper.model.GetQueryParameters;
-import org.yagato.holodexwrapper.model.PostQueryParameters;
-import org.yagato.holodexwrapper.model.Video;
+import io.github.yagato.holodexwrapper.model.Channel;
+import io.github.yagato.holodexwrapper.model.GetQueryParameters;
+import io.github.yagato.holodexwrapper.model.PostQueryParameters;
+import io.github.yagato.holodexwrapper.model.Video;
 
 import java.util.List;
 
